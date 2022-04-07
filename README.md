@@ -1,4 +1,5 @@
-# Proyecto Final - JS - Gestión de Ingresos y Egresos
+# ¡HEY WALLET!
+Proyecto Final - JS - Gestión de Ingresos y Egresos
 ## Acerca del proyecto
 
 El proyecto consiste en un gestor de ingresos y egresos, con los cuales calcula el balance y se pueden realizar ciertos análisis de los resultados obtenidos.
