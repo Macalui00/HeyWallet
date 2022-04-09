@@ -17,9 +17,6 @@
     
     <!--Styles-->    
     <link rel="stylesheet" href="CSS/styles.css" />
-
-    <!--scripts-->  
-    <script src="JS/main.js"></script>
     
     <!--Google Fonts--> 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,7 +51,7 @@
             <nav class="navbar navbar-expand-lg navbar-light bg-transparent pt-4 pb-1 px-4">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-align-left primary-text fs-4 me-3" id="menu-toggle"></i>
-                    <h2 class="fs-2 m-0 title-text">Balance - Enereo 2022</h2> 
+                    <h2 id="cabecera" class="fs-2 m-0 title-text">Balance - Enereo 2022</h2> 
                     <i class="fa fa-gear fs-4 ms-3 second-text icono" data-bs-toggle="modal" data-bs-target="#cambiarFecha"></i>
                 </div>
 
@@ -86,7 +83,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div>
-                                <h3 class="fs-4">3</h3>
+                                <h3 class="fs-4" id="cantItems">0</h3>
                                 <p class="fs-6">Total de Items</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3">tag</i>
@@ -96,7 +93,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div class="">
-                                <h3 class="fs-4">100.000,00</h3>
+                                <h3 class="fs-4" id="totalIng">0,00</h3>
                                 <p class="fs-6">Total Ingresos</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3" style="color: green;">north_east</i>
@@ -106,7 +103,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div>
-                                <h3 class="fs-4">5.340,00</h3>
+                                <h3 class="fs-4" id="totalEgr">0,00</h3>
                                 <p class="fs-6">Total Egresos</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3" style="color: red;">south_west</i>
@@ -116,7 +113,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div>
-                                <h3 class="fs-4">94.660,00</h3>
+                                <h3 class="fs-4" id="totalBal">0,00</h3>
                                 <p class="fs-6">Balance</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3">account_balance</i>
@@ -151,45 +148,12 @@
                                                                 <th>Tipo</th>
                                                                 <th>Categoria</th>
                                                                 <th>Nombre</th>
-                                                                <th>Fecha</th>
                                                                 <th>Monto</th>
                                                                 <th>Acciones</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td><i class="material-icons" style="color: green;">north_east</i></td>
-                                                                <td>Salario</td>
-                                                                <td>Salario mensual</td>
-                                                                <td>01.01.2022</td>
-                                                                <td>100.000,00</td>
-                                                                <td><i class="material-icons icono"
-                                                                        style="font-size:18px; color: green;">edit</i><i
-                                                                        class='material-icons icono'
-                                                                        style='font-size:18px;color: red;'>delete</i></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><i class="material-icons" style="color: red;">south_west</i></td>
-                                                                <td>Restaurante</td>
-                                                                <td>Mc Donalds</td>
-                                                                <td>13.01.2022</td>
-                                                                <td>1.840,00</td>
-                                                                <td><i class="material-icons icono"
-                                                                        style="font-size:18px; color: green;">edit</i><i
-                                                                        class='material-icons icono'
-                                                                        style='font-size:18px;color: red;'>delete</i></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><i class="material-icons" style="color: red;">south_west</i></td>
-                                                                <td>Regalo</td>
-                                                                <td>Cumpleaños Mario</td>
-                                                                <td>15.01.2022</td>
-                                                                <td>3.500,00</td>
-                                                                <td><i class="material-icons icono"
-                                                                        style="font-size:18px; color: green;">edit</i><i
-                                                                        class='material-icons icono'
-                                                                        style='font-size:18px;color: red;'>delete</i></td>
-                                                            </tr>
+                                                        <tbody class="bodyTable">
+                                                            
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -297,6 +261,8 @@
             </div>
         </div>
     </div>
+
+    <!-- modal de cambiar fecha -->
     <div class="modal fade" id="cambiarFecha" tabindex="-1" aria-labelledby="cambiarFechaLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -344,7 +310,114 @@
             </div>
         </div>
     </div>
+
+    <!-- modal de editar item ingreso -->
+    <div class="modal fade" id="editarIngreso" tabindex="-1" aria-labelledby="editarIngresoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="editarIngresoLabel">Editar Ingreso</h5>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!------ Formulario Editar Elemento ------->
+                    <form>
+                        <div class="mb-3">
+                            <label for="CatIngreso" class="form-label">Categoria de Ingreso</label>
+                            <select id="CatIngreso" class="form-select">
+                                <option>Sueldo</option>
+                                <option>Aguinaldo</option>
+                                <option>Ingresos Extra</option>
+                                <option>Inversiones</option>
+                                <option>Freelance</option>
+                                <option>Rentas</option>
+                                <option>Jubilación</option>
+                                <option>Bonus</option>
+                                <option>Comisiones</option>
+                                <option>Pensiones</option>
+                                <option>Plus</option>
+                                <option>Otros</option>
+                            </select>
+                            <!-- <div id="CatIngAyuda" class="form-text">Indique la categoria del Ingreso.</div> -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="Nombre" class="form-label">Nombre del Ingreso</label>
+                            <input type="text" class="form-control" id="Nombre" aria-describedby="NombreHelp">
+                            <!-- <div id="NombreHelp" class="form-text">Ingrese nombre del Ingreso/Egreso.</div> -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="Monto" class="form-label">Monto del Ingreso</label>
+                            <input type="text" class="form-control" id="Monto" aria-describedby="MontoHelp">
+                            <!-- <div id="MontoHelp" class="form-text">Ingrese el monto.</div> -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success">Editar Ingreso</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal de editar item egreso -->
+    <div class="modal fade" id="editarEgreso" tabindex="-1" aria-labelledby="editarEgresoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="editarEgresoLabel">Editar Egreso</h5>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!------ Formulario Editar Elemento ------->
+                    <form>
+                        <div class="mb-3">
+                            <label for="CatEgreso" class="form-label">Categoria de Egreso</label>
+                            <select id="CatEgreso" class="form-select">
+                                <option>Comida</option>
+                                <option>Deportes</option>
+                                <option>Deudas</option>
+                                <option>Entretenimiento</option>
+                                <option>Facturas</option>
+                                <option>Gimnasio</option>
+                                <option>Hogar</option>
+                                <option>Mascotas</option>
+                                <option>Regalos</option>
+                                <option>Restaurante</option>
+                                <option>Ropa</option>
+                                <option>Salud</option>
+                                <option>Tarjeta de Credito</option>
+                                <option>Transporte</option>
+                                <option>Impuestos</option>
+                                <option>Otros</option>
+                            </select>
+                            <!-- <div id="CatIngAyuda" class="form-text">Indique la categoria del Ingreso.</div> -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="Nombre" class="form-label">Nombre del Egreso</label>
+                            <input type="text" class="form-control" id="Nombre" aria-describedby="NombreHelp">
+                            <!-- <div id="NombreHelp" class="form-text">Ingrese nombre del Ingreso/Egreso.</div> -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="Monto" class="form-label">Monto del Egreso</label>
+                            <input type="text" class="form-control" id="Monto" aria-describedby="MontoHelp">
+                            <!-- <div id="MontoHelp" class="form-text">Ingrese el monto.</div> -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success">Editar Egreso</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--scripts bootstrap--> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         var el = document.getElementById("wrapper");
         var toggleButton = document.getElementById("menu-toggle");
@@ -353,6 +426,9 @@
             el.classList.toggle("toggled");
         };
     </script>
+    
+    <!--scripts-->  
+    <script src="JS/main.js"></script>
 </body>
 
 </html>

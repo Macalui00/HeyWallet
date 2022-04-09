@@ -1,110 +1,181 @@
+class Item{
+            
+    //Metodo Constructor
+    constructor(id, tipo, categoria, nombre, monto){
+        this.id = id;
+        this.tipo = tipo;
+        this.categoria = categoria;
+        this.nombre = nombre;
+        this.monto = monto;
+    }
+
+    detalleItem(){
+        return "Categoria: " + this.categoria + ", Nombre: " + this.nombre + ", monto: " + this.monto;
+    }
+}
 
 class LibroDiario{
 
     //Metodo Constructor
-    constructor(mes, ingresos, egresos){
+    constructor(mes, anio, items){
         this.mes = mes;
-        this.ingresos = ingresos;
-        this.egresos = egresos;
+        this.anio = anio;
+        this.items = items;
+    }
+
+    obtenerIngresos(){
+        return this.items.filter((item)=> item.tipo.toUpperCase() === "INGRESO");
+    }
+    
+    obtenerEgresos(){
+        return this.items.filter((item)=> item.tipo.toUpperCase() === "EGRESO");
     }
 
     calcularBalance(){
-        this.balance = this.ingresos.total - this.egresos.total;
+        const ingresos = this.obtenerIngresos();
+        const egresos = this.obtenerEgresos();
+
+        const totalIng = calcularTotal(ingresos);
+        const totalEgr = calcularTotal(egresos);
+
+        this.balance = totalIng - totalEgr;
     }
 
     analisisBalance(analisisOK, analisisNOTOK){
         return (this.balance < 0) ? analisisNOTOK : analisisOK; 
     }
-    
+
 }
 
-function analisisMensualBalance(){
+function calcularTotal(items){
+    let total = 0;
 
-    //Definimos las variables para los resultados del analisis
-    let analisisOK = "¡Felicidades! Usted esta manejando bien sus finanzas.",
-    analisisNOTOK = "¡Ups! Usted esta gastando más de lo que percibe, tiene que empezar a cuidar sus gastos.";
+    //Calculamos el total con reduce
+    items.forEach((item) =>{
+        total = total + item.monto;
+    })
 
-    const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    return total;
+}
+
+
+function analisisBalanceMensual(){
 
     //Definimos ingresos, egresos y el balance
-    const lD = new LibroDiario(calcularMes(mesesAnio), obtenerIngresos(), obtenerEgresos());
+    const lD = new LibroDiario(calcularMes(), calcularAnio(), obtenerItems());
     lD.calcularBalance();
 
-    //Armamos los listados finales de ingresos y egresos
-    const listadoIngresos = armarListado(lD.ingresos.listadoDsp, lD.ingresos.listadoMontos);
-    const listadoEgresos = armarListado(lD.egresos.listadoDsp, lD.egresos.listadoMontos);
-
-    //Retornamos resultados por pantalla
-    alert("Ingresos "+lD.mes+": " + lD.ingresos.total + ".\nEgresos "+lD.mes+": " + lD.egresos.total + '.');
-    alert("Listado Ingresos "+lD.mes+":\n" + listadoIngresos.join("\n"));
-    alert("Listado Egresos "+lD.mes+":\n" + listadoEgresos.join("\n"));
-    alert("El balance final es: " + lD.balance + "\n" + lD.analisisBalance(analisisOK, analisisNOTOK));
-
-    buscarItems(listadoIngresos, listadoEgresos);
+    return lD;
 }
 
-function buscarItems(listadoIngresos, listadoEgresos){
-
-    //Declaración de variables
-    let continuar = 'S', nombre = '', tipoItem = '';
+function calcularMes(){
+    const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
     
-    continuar = chequeoErroresCont(continuar,"¿Desea buscar items por nombre o descripción? S/N");
+    let mes = prompt("Por favor ingrese el mes a analizar.");
 
-    //Mientras el usuario quiera continuar:
+    while(!mesesAnio.includes(mes.toLowerCase())){
+
+        mes = prompt("Valor Erroneo. Por favor ingrese el mes a analizar.");
+
+    }
+
+    return mes.toLowerCase();
+}
+
+function calcularAnio(){
+    const date = new Date();
+    let anioActual = date.getFullYear();
+
+    let anio = parseInt(prompt("Por favor ingrese el anio."));
+
+    while(anio > anioActual || isNaN(parseInt(anio))){ 
+        anio = prompt("Año Erroneo. Por favor ingrese el año a analizar.");
+
+    }
+
+    return anio;
+}
+
+
+function obtenerItems(){
+
+    //Declaramos las variables a utilizar dentro de la función
+    let continuar = 'S', id = 0, tipo = "", categoria = "", nombre = "", monto;
+
+    const items = [];
+
+    //Mientras el usuario quiera continuar introduciendo items:
     while(continuar.toUpperCase() === "S"){
 
-        //Preguntamos por el tipo de item que se desea buscar
-        tipoItem = chequeoErroresItem(tipoItem, "Indique tipo de item que desea buscar. INGRESO o EGRESO");
+        //Solicitamos datos al usuario
+        tipo = chequeoErroresItem(tipo, "Indique tipo de item: INGRESO o EGRESO");
+        categoria = seleccionCategoria(categoria, tipo);
+        nombre = chequeoErroresNombre(nombre, "Ingrese nombre/descripción del item.");
+        monto = chequeoErroresMonto(monto, "El monto del item como valor positivo (>0).");
+        
+        //Insertamos los elementos en las listas
+        items.push(new Item(id, tipo, categoria, nombre, monto));
+        
+        //chequeamos que el usuario quiera seguir introduciendo ingresos
+        continuar = chequeoErroresCont(continuar,"¿Desea continuar ingresando items? S/N");
 
-        //En base al tipo de item indicado, filtramos por nombre o descripción los ingresos o egresos
-        if (tipoItem.toUpperCase === "INGRESO"){
+        id ++;
+    }
 
-            filtrarYMostrar(nombre, listadoIngresos);
-
-        } else {
-
-            filtrarYMostrar(nombre, listadoEgresos);
-        }
-
-        //chequeamos que el usuario quiera seguir buscando más items
-        continuar = chequeoErroresCont(continuar,"¿Desea buscar más items por nombre o descripción? S/N");
-
-    }  
+    //Retornamos listado de items
+    return items;
 
 }
 
-function filtrarYMostrar(nombre, listado){
+function seleccionCategoria(categoria, tipo){
+    let categIng = ["Sueldo", "Aguinaldo","Ingresos Extra","Inversiones","Freelance", "Rentas","Jubilación", "Bonus","Comisiones","Pensiones","Plus","Otros"];
+    let categEgr = ["Comida", "Deportes","Deudas","Entretenimiento","Facturas","Gimnasio","Hogar","Mascotas", "Regalos",
+                            "Restaurante", "Ropa", "Salud","Tarjeta de Credito", "Transporte", "Impuestos", "Otros"];
 
-    //Solicitamos el nombre o descripción por el cual vamos a filtrar
-    nombre = chequeoErroresNombre(nombre,"Ingrese nombre o descripción de los items a buscar.");
+    if (tipo.toUpperCase() === "INGRESO"){
 
-    //Hacemos el filtrado
-    const itemsFiltrados = listado.filter((item)=> item.includes(nombre));
+        mensajePrompt = "Indique la categoria del ingreso ingresando el número:\n"
+        categIng.forEach(categoria => mensajePrompt += `${categIng.indexOf(categoria)+1}- ${categoria}\n`);
 
-    //Mostramos el array final filtrado
-    if (itemsFiltrados.length === 0){
-
-        alert("No se han encontrado items con el nombre / descripción ingresada.");  
+        categoria = chequeoErroresCategoria(categoria, categIng, mensajePrompt, 0, 12);
 
     } else {
 
-        alert("Los items encontrados son los siguientes:\n" + itemsFiltrados.join("\n"));  
-        
+        mensajePrompt = "Indique la categoria del egreso ingresando el número:\n" 
+        categEgr.forEach(categoria => mensajePrompt += `${categEgr.indexOf(categoria)+1}- ${categoria}\n`);
+
+        categoria = chequeoErroresCategoria(categoria, categEgr, mensajePrompt, 0, 16);
     }
+
+    return categoria;
 }
 
-function chequeoErroresNombre(nombre,  mensajePrompt){
+function chequeoErroresCategoria(categoria, categItems, mensajePrompt, rangoInicio, rangoFin){
 
-    nombre = prompt(mensajePrompt);
-
+    categoria = parseInt(prompt(mensajePrompt));
+    
     // Chequea si el valor ingresado por el usuario es correcto
-    while(nombre === ""){
+    while((categoria < rangoInicio) || (categoria > rangoFin)){
 
-        nombre = prompt("Respuesta incorrecta " + mensajePrompt);
+        categoria = prompt("Respuesta incorrecta. " + mensajePrompt);
 
     }
 
-    return nombre;
+    return categItems[categoria-1];
+}
+
+function chequeoErroresMonto(valor, mensajePrompt){
+
+    valor = parseFloat(prompt(mensajePrompt));
+
+    // Chequea si el valor ingresado por el usuario es mayor a cero
+    while(valor < 0){
+
+        valor =  parseFloat(prompt("Monto incorrecto. "+mensajePrompt));
+
+    }
+
+    return valor;
 }
 
 function chequeoErroresItem(tipoItem,  mensajePrompt){
@@ -121,117 +192,52 @@ function chequeoErroresItem(tipoItem,  mensajePrompt){
     return tipoItem;
 }
 
-function calcularMes(mesesAnio){
+function buscarItems(listadoItems){
 
-    let mes = prompt("Por favor ingrese el mes a analizar.");
+    //Declaración de variables
+    let continuar = 'S', nombre = '';
+    
+    continuar = chequeoErroresCont(continuar,"¿Desea buscar items por nombre o descripción? S/N");
 
-    while(!mesesAnio.includes(mes.toLowerCase())){
-
-        mes = prompt("Valor Erroneo. Por favor ingrese el mes a analizar.");
-
-    }
-
-    return mes.toLowerCase();
-}
-
-function armarListado(listadoDsp, listadoMontos){
-    const listado = [];
-
-    if (listadoDsp.length === listadoMontos.length){
-
-        for(let i = 0; i < listadoMontos.length; i++){
-
-            listado.push(listadoDsp[i] + ": "+ listadoMontos[i]);
-
-        }        
-
-    }
-
-    return listado;
-}
-
-function obtenerIngresos(){
-
-    //Declaramos las variables a utilizar dentro de la función
-    let continuar = 'S', ingreso = 0, descripcion = "", total = 0;
-    const listadoIng = [], listadoDsp = [];
-
-    //Mientras el usuario quiera continuar introduciendo ingresos:
+    //Mientras el usuario quiera continuar:
     while(continuar.toUpperCase() === "S"){
 
-        //Solicitamos nombre o descripción del ingreso, y el monto del mismo.
-        descripcion = prompt("Ingrese nombre/descripción del ingreso. Ej: Salario, Plus Feriado, Vacaciones, etc.");
-        ingreso = parseFloat(prompt("Ingrese el monto del ingreso en cuestión como valor positivo (>0)."));
-        //El ingreso debe ser positivo (mayor a 0).
-        ingreso = chequeoErroresMonto(ingreso, "Ingreso Incorrecto. El ingreso debe ser mayor a 0.");
+        //Solicitamos el nombre o descripción por el cual vamos a filtrar
+        nombre = chequeoErroresNombre(nombre,"Ingrese nombre o descripción de los items a buscar.");
 
-        //Insertamos los elementos en las listas
-        listadoDsp.push(descripcion);
-        listadoIng.push(ingreso);
+        //Hacemos el filtrado
+        const itemsFiltrados = listadoItems.filter((item)=> item.includes(nombre));
 
-        //chequeamos que el usuario quiera seguir introduciendo ingresos
-        continuar = chequeoErroresCont(continuar,"¿Desea continuar ingresando Ingresos? S/N");
+        //Mostramos el array final filtrado
+        if (itemsFiltrados.length === 0){
 
-    }
+            alert("No se han encontrado items con el nombre / descripción ingresada.");  
 
-    //Calculamos el total
-    total = calcularTotal(listadoIng);
+        } else {
 
-    //Retornamos un objeto con el listado de ingresos y el total
-    return {listadoDsp: listadoDsp, listadoMontos: listadoIng, total: total};
+            alert("Los items encontrados son los siguientes:\n" + itemsFiltrados.join("\n"));  
+            
+        }
 
-}
+        //chequeamos que el usuario quiera seguir buscando más items
+        continuar = chequeoErroresCont(continuar,"¿Desea buscar más items por nombre o descripción? S/N");
 
-function obtenerEgresos(){
-    
-    //Declaramos las variables a utilizar dentro de la función
-    let continuar = 'S', egreso = 0, descripcion = "", total = 0;
-    const listadoEgr = [], listadoDsp = [];
-    
-    //Mientras el usuario quiera continuar introduciendo egresos:
-    while(continuar.toUpperCase() === "S"){
-        
-        //Solicitamos nombre o descripción del egreso, y el monto del mismo.
-        descripcion = prompt("Ingrese nombre/descripción del egreso. Ej: Compras, Regalo, Comidas, etc.");
-        egreso = parseFloat(prompt("Ingrese el monto del egreso en cuestión como valor positivo (>0)."));
-        //Se chequea que el egreso sea mayor a cero
-        egreso = chequeoErroresMonto(egreso, "Egreso Incorrecto. El egreso debe ser mayor a 0."); 
-
-        //Calculamos el total y el listado de egresos.
-        listadoDsp.push(descripcion)
-        listadoEgr.push(egreso);
-
-        //chequeamos que el usuario quiera seguir introduciendo egresos
-        continuar = chequeoErroresCont(continuar,"¿Desea continuar ingresando Egresos? S/N");
-
-    }
-
-    //Calcular total de egresos
-    total = calcularTotal(listadoEgr);
-
-    //Retornamos un objeto con el listado de egresis y el total
-    return {listadoDsp: listadoDsp,listadoMontos: listadoEgr, total: total};
+    }  
 
 }
 
-function calcularTotal(listado){
+function chequeoErroresNombre(nombre,  mensajePrompt){
 
-    //Calculamos el total con reduce
-    let total = listado.reduce((acum, elem) => acum + elem, 0);
+    nombre = prompt(mensajePrompt);
 
-    return total;
-}
+    // Chequea si el valor ingresado por el usuario es correcto
+    while(nombre === "" || !isNaN(parseInt(nombre))){
 
-function chequeoErroresMonto(valor, mensajePrompt){
-    
-    // Chequea si el valor ingresado por el usuario es mayor a cero
-    while(valor < 0){
-
-        valor =  parseFloat(prompt(mensajePrompt));
+        nombre = prompt("Respuesta incorrecta. " + mensajePrompt);
 
     }
 
-    return valor;
+    return nombre;
 }
 
 function chequeoErroresCont(continuar,  mensajePrompt){
@@ -247,27 +253,67 @@ function chequeoErroresCont(continuar,  mensajePrompt){
 
     return continuar;
 }
+            
+function armarListado(listadoItems){
+    const detalle = [];
 
+    for(const item of listadoItems){
+
+        detalle.push(item.detalleItem());
+
+    }
+
+    return detalle;
+}
 
 //Ahora vamos a la ejecución de todo:
-let continuar = 'S';
+const libroDiarioAnual = [];
 
-alert("Bienvenido al calculador de balances para cuidar tu salud financiera. \nA continuación se le solicitara primero el mes a analizar, luego sus ingresos y finalmente sus egresos.");
+alert("Bienvenido al calculador de balances para cuidar tu salud financiera. \nA continuación se le solicitara primero el ingreso del mes y anio a analizar, luego ingresar los ingresos y egresos.");
 
-//Mientras el usuario quiera continuar:
-while(continuar.toUpperCase() === "S"){
+//Realizamos el análisis mensual del balance
+const lD = analisisBalanceMensual();
 
-    //Realizamos el análisis mensual del balance
-    analisisMensualBalance();
+//Armamos los listados finales de ingresos y egresos
+const detalleIng = armarListado(lD.obtenerIngresos());
+const detalleEgr = armarListado(lD.obtenerEgresos());
 
-    //Chequeamos que el usuario quiera seguir calculando balances
-    continuar = chequeoErroresCont(continuar,"¿Desea calcular otro balance? S/N");
+//Muestra de datos en los elementos de la pantalla
+let cabecera = document.getElementById("cabecera");
+cabecera.innerText = "Balance - " + lD.mes + " " + lD.anio; 
+
+let cantItems = document.getElementById("cantItems");
+cantItems.innerText = lD.items.length; 
+
+let totalIng = document.getElementById("totalIng");
+totalIng.innerText = calcularTotal(lD.obtenerIngresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"});
+
+let totalEgr = document.getElementById("totalEgr");
+totalEgr.innerText = calcularTotal(lD.obtenerEgresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"});
+
+let totalBal = document.getElementById("totalBal");
+totalBal.innerText = lD.balance.toLocaleString("es-CO", {style: "currency",currency: "COP"});
+totalBal.className = (lD.balance < 0) ? ("fs-4 text-danger") : ("fs-4 text-success");
+
+for (const item of lD.items) {
+
+    let lineaTabla = document.createElement("tr");
+
+    //Definimos el innerHTML del elemento con una plantilla de texto
+    lineaTabla.innerHTML = `<td>${(item.tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons' style='color: red;''>south_west</i>") : 
+                            ("<i class='material-icons' style='color: green;''>north_east</i>")}</td>
+                            <td>${item.categoria}</td>
+                            <td>${item.nombre}</td>
+                            <td>${item.monto.toLocaleString("es-CO", {style: "currency",currency: "COP"})}</td>
+                            <td><i class="material-icons icono" style="font-size:18px; 
+                            color: green;" data-bs-toggle="modal" ${(item.tipo.toUpperCase() === "EGRESO") ?
+                             (" data-bs-target='#editarEgreso'") : (" data-bs-target='#editarIngreso'")} >edit</i><i class="material-icons icono"
+                            style="font-size:18px;color: red;"">delete</i></td>`;
+
+    let cuerpoTabla = document.querySelector(".bodyTable");
+    cuerpoTabla.appendChild(lineaTabla);
 
 }
 
-// Agregado simplemente como un saludo final
-if(continuar.toUpperCase() === "N"){
-       
-    alert("¡Muchas gracias! ¡Hasta Luego!");
+buscarItems(armarListado(lD.items));
 
-}
