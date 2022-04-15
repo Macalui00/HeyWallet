@@ -93,13 +93,19 @@ function calcularTotal(items){
     return total;
 }
 
+const libroDiarioAnual = [];
 //Obtengo la fecha actual
 const date = new Date();
 
 //Definimos ingresos, egresos y el balance
-const lD = new LibroDiario(date.getMonth(), date.getFullYear(), []);
+let lD = new LibroDiario(date.toLocaleString("es-AR", { month: "long" }), date.getFullYear(), []);
+
+//Agrego el libro diario del mes actual al listado
+libroDiarioAnual.push(lD);
    
 //obtengo los elementos del DOM que voy a utilizar
+//Elemento de cabecera
+let cabecera = document.getElementById("cabecera");
 
 //Elementos de ingreso de items
 let tipoEgreso = document.getElementById("tipoEgreso");
@@ -143,9 +149,96 @@ let btnSearch = document.getElementById("btn-Search");
 let nombreABuscar = document.getElementById("buscarXNombre");
 let btnClean = document.getElementById("btn-Clean");
 
+//Elementos del cambio de fecha
+let btnDate = document.getElementById("btn-Date");
+let btnChangeDate = document.getElementById("btn-ChangeDate");
+let selecAnio = document.getElementById("selecAnio");
+let selecMes = document.getElementById("selecMes");
 
 //Utilizados en la edición y eliminación de un item
 let id, tipoItem;
+
+//Configuro la cabecera del index
+cabecera.textContent = "Balance - " + lD.mes + " " + lD.anio;
+
+//Al cliquear el botón de Cambio de Fecha
+btnDate.onclick = () => {
+    selecAnio.value = lD.anio;
+    selecMes.value = lD.mes;
+}
+
+//Verifico si existe el libro diario para ese mes y anio
+function existeLD(mes, anio){
+    for(const libro of libroDiarioAnual){
+        
+        //Si existe el libro diario para ese mes y anio
+        if (libro.mes === mes && libro.anio === anio){
+
+            return true;
+
+        }
+    }
+
+    //No existe el libro diario para ese mes y anio
+    return false;
+}
+
+//Obtengo el libro diario del mes y anio
+function obtenerLD(mes, anio){
+    for(const libro of libroDiarioAnual){  
+
+        //Si existe el libro diario para ese mes y anio
+        if (libro.mes === mes && libro.anio === anio){
+
+            return libro;
+
+        }
+    }
+
+    //No existe el libro diario para ese mes y anio
+    return {};
+}
+
+//Al cliquear el botón de Cambiar Fecha en el Modal
+btnChangeDate.onclick = () => {
+
+    const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+    if ((mesesAnio.indexOf(selecMes.value) <= date.getMonth()) 
+        && (parseInt(selecAnio.value) === date.getFullYear()))
+     {
+
+        if (existeLD(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value))){
+
+            lD = obtenerLD(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value));
+
+        } else {
+
+            //Creo el libro diario
+            libroDiarioAnual.push(new LibroDiario(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value), []));
+
+            //Agrego el libro diario del mes actual al listado
+            lD = obtenerLD(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value));        
+
+        }
+
+        //Cambio de cabecera
+        cabecera.textContent = "Balance - " + lD.mes + " " + lD.anio;
+
+        //Limpio la tabla
+        limpiarTabla();
+
+        //Cargo la tabla con los datos del libro diario
+        cargarTabla(lD.items);
+
+    } else {
+
+        alert("Fecha ingresada erronea.");
+
+    }
+    
+   
+}
 
 // Ocultando y desocultando categorias en función si el usuario selecciona tipo de item Ingreso o Egreso.
 tipoEgreso.onclick = () => {
