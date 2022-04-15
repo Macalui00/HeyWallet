@@ -202,23 +202,32 @@ function obtenerLD(mes, anio){
 //Al cliquear el botón de Cambiar Fecha en el Modal
 btnChangeDate.onclick = () => {
 
+    //Defino y armo las fechas y formato de fecha que voy a utilizar
     const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    //Mes ingresado en formato múmero (1, 2, 3, etc.)
+    let mesIngrNumero = mesesAnio.indexOf(selecMes.value);
+    let mesActual = date.getMonth();
+    let anioIngresado = parseInt(selecAnio.value);
+    let anioActual = date.getFullYear();
+    //Mes ingresado en formato nombre (enero, febrero, marzo, etc.)
+    let mesIngrNombre = selecMes.value.toLocaleString("es-AR", { month: "long" });
 
-    if ((mesesAnio.indexOf(selecMes.value) <= date.getMonth()) 
-        && (parseInt(selecAnio.value) === date.getFullYear()))
-     {
+    //Chequeo que el mes y el año no superen el mes y año actual, solo se admiten mes y año previos
+    if ( ((mesIngrNumero <= mesActual) && (anioIngresado === anioActual)) || (parseInt(selecAnio.value) < date.getFullYear()) ) {
 
-        if (existeLD(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value))){
+        //Si ya existe un libro diario para un mes y año en particular
+        if (existeLD(mesIngrNombre, anioIngresado)){
 
-            lD = obtenerLD(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value));
+            //Obtengo ese libro diario para visualizarlo.
+            lD = obtenerLD(mesIngrNombre, anioIngresado);
 
         } else {
 
             //Creo el libro diario
-            libroDiarioAnual.push(new LibroDiario(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value), []));
+            libroDiarioAnual.push(new LibroDiario(mesIngrNombre, anioIngresado, []));
 
             //Agrego el libro diario del mes actual al listado
-            lD = obtenerLD(selecMes.value.toLocaleString("es-AR", { month: "long" }), parseInt(selecAnio.value));        
+            lD = obtenerLD(mesIngrNombre, anioIngresado);        
 
         }
 
@@ -231,7 +240,7 @@ btnChangeDate.onclick = () => {
         //Cargo la tabla con los datos del libro diario
         cargarTabla(lD.items);
 
-    } else {
+    } else { //Si el mes y el año superen el mes y año actual, indigo fecha erronea.
 
         alert("Fecha ingresada erronea.");
 
