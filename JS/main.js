@@ -1,3 +1,4 @@
+//Clase Item
 class Item{
             
     //Metodo Constructor
@@ -12,8 +13,41 @@ class Item{
     detalleItem(){
         return "Categoria: " + this.categoria + ", Nombre: " + this.nombre + ", monto: " + this.monto;
     }
+
+    getID() {
+        return this.id;
+    }
+
+    getTipo() {
+        return this.tipo;
+    }
+
+    getCategoria() {
+        return this.categoria;
+    }
+
+    getNombre() {
+        return this.nombre;
+    }
+
+    getMonto() {
+        return this.monto;
+    }
+
+    setCategoria(categoria) {
+        this.categoria = categoria;
+    }
+
+    setNombre(nombre) {
+        this.nombre = nombre;
+    }
+
+    setMonto(monto) {
+        this.monto = monto;
+    }
 }
 
+//Clase Libro diario - (mes, anio)
 class LibroDiario{
 
     //Metodo Constructor
@@ -47,6 +81,7 @@ class LibroDiario{
 
 }
 
+//Calculo el total del listado items
 function calcularTotal(items){
     let total = 0;
 
@@ -58,262 +93,548 @@ function calcularTotal(items){
     return total;
 }
 
+//Obtengo la fecha actual
+const date = new Date();
 
-function analisisBalanceMensual(){
+//Definimos ingresos, egresos y el balance
+const lD = new LibroDiario(date.getMonth(), date.getFullYear(), []);
+   
+//obtengo los elementos del DOM que voy a utilizar
 
-    //Definimos ingresos, egresos y el balance
-    const lD = new LibroDiario(calcularMes(), calcularAnio(), obtenerItems());
-    lD.calcularBalance();
+//Elementos de ingreso de items
+let tipoEgreso = document.getElementById("tipoEgreso");
+let tipoIngreso = document.getElementById("tipoIngreso");
+let btnAddItem = document.getElementById("btn-addItem");
+let btnModalAddItem = document.getElementById("btn-modalAddItem");
+let catIngreso = document.getElementById("catIngreso");
+let catEgreso = document.getElementById("catEgreso");
+let nombre = document.getElementById("nombre");
+let monto = document.getElementById("monto");
 
-    return lD;
-}
+let divEgreso = document.getElementById("div-Egreso");
+let divIngreso = document.getElementById("div-Ingreso");
 
-function calcularMes(){
-    const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+//Elementos de totales
+let cantItems = document.getElementById("cantItems");
+let totalIng = document.getElementById("totalIng");
+let totalEgr = document.getElementById("totalEgr");
+let totalBal = document.getElementById("totalBal");
+
+let continuar;
+
+//Elementos de edición de items
+let iconEdit = document.getElementsByClassName("iconEdit");
+let divEgresoEdit = document.getElementById("div-EgresoEdit");
+let divIngresoEdit = document.getElementById("div-IngresoEdit");
+let catIngresoEdit = document.getElementById("catIngresoEdit");
+let catEgresoEdit = document.getElementById("catEgresoEdit");
+let nombreEdit = document.getElementById("nombreEdit");
+let montoEdit = document.getElementById("montoEdit");
+let editarItemLabel = document.getElementById("editarItemLabel");
+
+let btnEditItem = document.getElementById("btn-editItem"); 
+
+//Elementos de eliminación de items
+let btnDeleteItem = document.getElementById("btn-DeleteItem");
+
+//Elementos de busqueda de items
+let formularioBuscador = document.getElementById("formularioBuscador");
+let btnSearch = document.getElementById("btn-Search");
+let nombreABuscar = document.getElementById("buscarXNombre");
+let btnClean = document.getElementById("btn-Clean");
+
+
+//Utilizados en la edición y eliminación de un item
+let id, tipoItem;
+
+// Ocultando y desocultando categorias en función si el usuario selecciona tipo de item Ingreso o Egreso.
+tipoEgreso.onclick = () => {
     
-    let mes = prompt("Por favor ingrese el mes a analizar.");
-
-    while(!mesesAnio.includes(mes.toLowerCase())){
-
-        mes = prompt("Valor Erroneo. Por favor ingrese el mes a analizar.");
-
-    }
-
-    return mes.toLowerCase();
-}
-
-function calcularAnio(){
-    const date = new Date();
-    let anioActual = date.getFullYear();
-
-    let anio = parseInt(prompt("Por favor ingrese el anio."));
-
-    while(anio > anioActual || isNaN(parseInt(anio))){ 
-        anio = prompt("Año Erroneo. Por favor ingrese el año a analizar.");
-
-    }
-
-    return anio;
-}
-
-
-function obtenerItems(){
-
-    //Declaramos las variables a utilizar dentro de la función
-    let continuar = 'S', id = 0, tipo = "", categoria = "", nombre = "", monto;
-
-    const items = [];
-
-    //Mientras el usuario quiera continuar introduciendo items:
-    while(continuar.toUpperCase() === "S"){
-
-        //Solicitamos datos al usuario
-        tipo = chequeoErroresItem(tipo, "Indique tipo de item: INGRESO o EGRESO");
-        categoria = seleccionCategoria(categoria, tipo);
-        nombre = chequeoErroresNombre(nombre, "Ingrese nombre/descripción del item.");
-        monto = chequeoErroresMonto(monto, "El monto del item como valor positivo (>0).");
-        
-        //Insertamos los elementos en las listas
-        items.push(new Item(id, tipo, categoria, nombre, monto));
-        
-        //chequeamos que el usuario quiera seguir introduciendo ingresos
-        continuar = chequeoErroresCont(continuar,"¿Desea continuar ingresando items? S/N");
-
-        id ++;
-    }
-
-    //Retornamos listado de items
-    return items;
+    divEgreso.className = "mb-3";
+    divIngreso.className = "mb-3 d-none";
 
 }
 
-function seleccionCategoria(categoria, tipo){
-    let categIng = ["Sueldo", "Aguinaldo","Ingresos Extra","Inversiones","Freelance", "Rentas","Jubilación", "Bonus","Comisiones","Pensiones","Plus","Otros"];
-    let categEgr = ["Comida", "Deportes","Deudas","Entretenimiento","Facturas","Gimnasio","Hogar","Mascotas", "Regalos",
-                            "Restaurante", "Ropa", "Salud","Tarjeta de Credito", "Transporte", "Impuestos", "Otros"];
 
-    if (tipo.toUpperCase() === "INGRESO"){
+tipoIngreso.onclick = () => {
 
-        mensajePrompt = "Indique la categoria del ingreso ingresando el número:\n"
-        categIng.forEach(categoria => mensajePrompt += `${categIng.indexOf(categoria)+1}- ${categoria}\n`);
+    divEgreso.className = "mb-3 d-none";
+    divIngreso.className = "mb-3";
 
-        categoria = chequeoErroresCategoria(categoria, categIng, mensajePrompt, 0, 12);
+}
+
+//Al hacer click en el boton de modal Agregar Item seteo que categoria se mostrará por default al abrir el modal
+btnModalAddItem.onclick = () => {
+
+    divEgreso.className = "mb-3 d-none";
+    divIngreso.className = "mb-3";
+
+}
+
+//Verifico si existe el item con determinado nombre y categoria retorno true
+function existeItem(catItem, nombreItem){
+    for(const item of lD.items){
+
+        //Si existe el item con tal nombre y categoria retorno true
+        if (item.nombre === nombreItem && item.categoria === catItem){
+
+            return true;
+
+        }
+    }
+
+    //No existe el item con tal nombre y categoria retorno false
+    return false;
+}
+
+//Validar formulario antes de agregar el item
+function validarFormAgrItem(){
+    
+    //Valido si el item es de tipo ingreso, la categoria no haya quedado vacía
+    if (tipoIngreso.checked && catIngreso.value.length === 0) {
+
+        alert("¡Falta ingresar categoria ingreso!");
+        continuar = false;
+
+    //Valido si el item es de tipo egreso, la categoria no haya quedado vacía
+    } else if (tipoEgreso.checked && catEgreso.value.length === 0) {
+
+        alert("¡Falta ingresar categoria egreso!");
+        continuar = false;
 
     } else {
 
-        mensajePrompt = "Indique la categoria del egreso ingresando el número:\n" 
-        categEgr.forEach(categoria => mensajePrompt += `${categEgr.indexOf(categoria)+1}- ${categoria}\n`);
+        //Valido que el nombre no haya quedado vacío
+        if (nombre.value.length === 0){
 
-        categoria = chequeoErroresCategoria(categoria, categEgr, mensajePrompt, 0, 16);
-    }
+            alert("¡Falta ingresar nombre!");
+            continuar = false;
 
-    return categoria;
-}
+        //Valido que no haya un item con (categoria, nombre) iguales
+        } else if(existeItem(((tipoIngreso.checked) ? (catIngreso.value) : (catEgreso.value)), nombre.value)) {
 
-function chequeoErroresCategoria(categoria, categItems, mensajePrompt, rangoInicio, rangoFin){
-
-    categoria = parseInt(prompt(mensajePrompt));
-    
-    // Chequea si el valor ingresado por el usuario es correcto
-    while((categoria < rangoInicio) || (categoria > rangoFin)){
-
-        categoria = prompt("Respuesta incorrecta. " + mensajePrompt);
-
-    }
-
-    return categItems[categoria-1];
-}
-
-function chequeoErroresMonto(valor, mensajePrompt){
-
-    valor = parseFloat(prompt(mensajePrompt));
-
-    // Chequea si el valor ingresado por el usuario es mayor a cero
-    while(valor < 0){
-
-        valor =  parseFloat(prompt("Monto incorrecto. "+mensajePrompt));
-
-    }
-
-    return valor;
-}
-
-function chequeoErroresItem(tipoItem,  mensajePrompt){
-
-    tipoItem = prompt(mensajePrompt);
-
-    // Chequea si el valor ingresado por el usuario es correcto
-    while((tipoItem.toUpperCase() !== "INGRESO") && (tipoItem.toUpperCase() !== "EGRESO")){
-
-        tipoItem = prompt("Respuesta incorrecta " + mensajePrompt);
-
-    }
-
-    return tipoItem;
-}
-
-function buscarItems(listadoItems){
-
-    //Declaración de variables
-    let continuar = 'S', nombre = '';
-    
-    continuar = chequeoErroresCont(continuar,"¿Desea buscar items por nombre o descripción? S/N");
-
-    //Mientras el usuario quiera continuar:
-    while(continuar.toUpperCase() === "S"){
-
-        //Solicitamos el nombre o descripción por el cual vamos a filtrar
-        nombre = chequeoErroresNombre(nombre,"Ingrese nombre o descripción de los items a buscar.");
-
-        //Hacemos el filtrado
-        const itemsFiltrados = listadoItems.filter((item)=> item.includes(nombre));
-
-        //Mostramos el array final filtrado
-        if (itemsFiltrados.length === 0){
-
-            alert("No se han encontrado items con el nombre / descripción ingresada.");  
+            alert("¡No se puede ingresar más de un item con la misma categoria y nombre!");
+            continuar = false;
 
         } else {
 
-            alert("Los items encontrados son los siguientes:\n" + itemsFiltrados.join("\n"));  
-            
-        }
+            //Valido que el monto no haya quedado vacío
+            if (isNaN(parseFloat(monto.value))){
 
-        //chequeamos que el usuario quiera seguir buscando más items
-        continuar = chequeoErroresCont(continuar,"¿Desea buscar más items por nombre o descripción? S/N");
+                alert("¡UPS! Monto Erroneo.");
+                continuar = false;
+               
+            //Valido que el monto no sea negativo
+            } else if (parseFloat(monto.value) < 0) {
 
-    }  
+                alert("¡El monto debe ser mayor a cero!");
+                continuar = false;
 
+            //Pasó las validaciones
+            } else {
+
+                continuar = true;
+
+            }
+        }    
+    }
+    
 }
 
-function chequeoErroresNombre(nombre,  mensajePrompt){
+//Limpiar Formulario de Agregado de Item
+function limpiarFormAgrItem(){
 
-    nombre = prompt(mensajePrompt);
+    //Lo seteo para que por default muestre tipo de item Ingreso
+    if (tipoIngreso.checked){
 
-    // Chequea si el valor ingresado por el usuario es correcto
-    while(nombre === "" || !isNaN(parseInt(nombre))){
+        //limpio el campo de categoria ingreso
+        catIngreso.value = "";
 
-        nombre = prompt("Respuesta incorrecta. " + mensajePrompt);
+    } else {
+
+        //limpio el campo de categoria egreso
+        catEgreso.value = "";
+
+        //Para que muestre la categoria de Ingreso
+        divEgreso.className = "mb-3 d-none";
+        divIngreso.className = "mb-3";
 
     }
 
-    return nombre;
+    //Indico Tipo de Item: ingreso
+    tipoIngreso.checked = true;
+    tipoEgreso.checked = false;
+
+    //limpio los campos de nombre y monto
+    nombre.value = "";
+    monto.value = "";
+    
 }
 
-function chequeoErroresCont(continuar,  mensajePrompt){
+//Agrego el item en la tabla
+function agregarItemATabla(){
 
-    continuar = prompt(mensajePrompt);
+    //Obtengo el item que que acabo de agregar al listado de la tabla
+    const item = lD.items[lD.items.length-1];
 
-    // Chequea si el valor ingresado por el usuario es correcto
-    while((continuar.toUpperCase() !== "S") && (continuar.toUpperCase() !== "N")){
-
-        continuar = prompt("Respuesta incorrecta " + mensajePrompt);
-
-    }
-
-    return continuar;
-}
-            
-function armarListado(listadoItems){
-    const detalle = [];
-
-    for(const item of listadoItems){
-
-        detalle.push(item.detalleItem());
-
-    }
-
-    return detalle;
-}
-
-//Ahora vamos a la ejecución de todo:
-const libroDiarioAnual = [];
-
-alert("Bienvenido al calculador de balances para cuidar tu salud financiera. \nA continuación se le solicitara primero el ingreso del mes y anio a analizar, luego ingresar los ingresos y egresos.");
-
-//Realizamos el análisis mensual del balance
-const lD = analisisBalanceMensual();
-
-//Armamos los listados finales de ingresos y egresos
-const detalleIng = armarListado(lD.obtenerIngresos());
-const detalleEgr = armarListado(lD.obtenerEgresos());
-
-//Muestra de datos en los elementos de la pantalla
-let cabecera = document.getElementById("cabecera");
-cabecera.innerText = "Balance - " + lD.mes + " " + lD.anio; 
-
-let cantItems = document.getElementById("cantItems");
-cantItems.innerText = lD.items.length; 
-
-let totalIng = document.getElementById("totalIng");
-totalIng.innerText = calcularTotal(lD.obtenerIngresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"});
-
-let totalEgr = document.getElementById("totalEgr");
-totalEgr.innerText = calcularTotal(lD.obtenerEgresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"});
-
-let totalBal = document.getElementById("totalBal");
-totalBal.innerText = lD.balance.toLocaleString("es-CO", {style: "currency",currency: "COP"});
-totalBal.className = (lD.balance < 0) ? ("fs-4 text-danger") : ("fs-4 text-success");
-
-for (const item of lD.items) {
-
+    //Creo la linea de la tabla en la que colocaré el item
     let lineaTabla = document.createElement("tr");
 
+    //Le asigno un id para identificar al item
+    lineaTabla.id = "item" + item.id;
+
+    let montoConvertido = item.monto.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
     //Definimos el innerHTML del elemento con una plantilla de texto
-    lineaTabla.innerHTML = `<td>${(item.tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons' style='color: red;''>south_west</i>") : 
-                            ("<i class='material-icons' style='color: green;''>north_east</i>")}</td>
+    lineaTabla.innerHTML = `<td>${(item.tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons text-danger' style=''>south_west</i>") : 
+                            ("<i class='material-icons text-success' style=''>north_east</i>")}</td>
                             <td>${item.categoria}</td>
                             <td>${item.nombre}</td>
-                            <td>${item.monto.toLocaleString("es-CO", {style: "currency",currency: "COP"})}</td>
-                            <td><i class="material-icons icono" style="font-size:18px; 
-                            color: green;" data-bs-toggle="modal" ${(item.tipo.toUpperCase() === "EGRESO") ?
-                             (" data-bs-target='#editarEgreso'") : (" data-bs-target='#editarIngreso'")} >edit</i><i class="material-icons icono"
-                            style="font-size:18px;color: red;"">delete</i></td>`;
+                            <td>${montoConvertido}</td>
+                            <td><i class="material-icons icono iconEdit text-success" style="" data-bs-toggle="modal" onclick="cargarItemEdit(this)" data-bs-target="#editarItem">edit</i>
+                            <i class="material-icons icono text-danger" style="" data-bs-toggle="modal" onclick="cargarItemElim(this)" data-bs-target="#eliminarItem">delete</i></td>`;
 
+    //Obtengo el cuerpo de la tabla
     let cuerpoTabla = document.querySelector(".bodyTable");
+
+    //Le agrego al cuerpo de la tabla la nueva linea de tabla creada
     cuerpoTabla.appendChild(lineaTabla);
+    
+}
+
+//Calculo los totales de cantidad de items, total ingresos, total egresos, total balance
+function calcularTotales(){
+
+    //Calculo y muestro la cantidad de items
+    cantItems.innerText = lD.items.length;
+    
+    //Calculo y muestro el total de ingresos
+    totalIng.innerText = calcularTotal(lD.obtenerIngresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+
+    //Calculo y muestro el total de egresos
+    totalEgr.innerText = calcularTotal(lD.obtenerEgresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+
+    lD.calcularBalance();
+
+    //Calculo y muestro el total de balance
+    totalBal.innerText = lD.balance.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+
+    //Si el balance es positivo lo muestro en verde, si es negativo lo muestro en rojo
+    totalBal.className = (lD.balance < 0) ? ("fs-5 text-danger") : ("fs-5 text-success");
 
 }
 
-buscarItems(armarListado(lD.items));
+//Al cliquear en el boton "Agregar Item" del modal Agregar Item
+btnAddItem.onclick = () => {
+    
+    //Valido que los datos ingresados en el formulario esten correctos
+    validarFormAgrItem();
+     
+    //Verifico si el tipo de item indicado es un Ingreso 
+    if (tipoIngreso.checked) {
+        
+        if (continuar){
+            
+            //Creo el item en el listado de items
+            lD.items.push(new Item(lD.items.length+1,"INGRESO", catIngreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
+            
+            //Limpio los campos del modal
+            limpiarFormAgrItem();
+
+            //Agrego al item en la tabla
+            agregarItemATabla();
+
+            //calculo los totales
+            calcularTotales();
+
+        }
+    
+    //Caso contrario es un Egreso 
+    } else {
+        
+        if (continuar){
+             
+            //Creo el item en el listado de items
+            lD.items.push(new Item(lD.items.length+1,"EGRESO", catEgreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
+            
+            //Limpio los campos del modal
+            limpiarFormAgrItem();
+
+            //Agrego al item en la tabla
+            agregarItemATabla();
+
+            //calculo los totales
+            calcularTotales();
+
+        }
+    }
+    
+
+}
+
+//Busco el id del item en cuestión
+function buscarIdItem(categoria, nombre){
+    for (const item of lD.items){
+        if (item.nombre === nombre && item.categoria === categoria){
+            return item.id;
+        }
+    }
+}
+
+//Cargo los datos del item a editar
+function cargarItemEdit(nodo){
+    
+    //Obtengo la linea de datos del item en cuestión en la tabla
+    let nodoTd = nodo.parentNode; //Nodo TD
+    let nodoTr = nodoTd.parentNode; //Nodo TR
+    let nodosEnTr = nodoTr.getElementsByTagName('td');
+    
+    //Obtengo los datos del item en cuestión que estan en la tabla
+    let tipo = nodosEnTr[0].textContent; //En la tabla el tipo esta representado por un icon de nombre north_east o west_east
+    let categoria = nodosEnTr[1].textContent;
+    let nombre = nodosEnTr[2].textContent; 
+    let monto = nodosEnTr[3].textContent;
+    
+    //Obtengo el id del item en función de su categoria y nombre
+    id = buscarIdItem(categoria, nombre);
+
+    //Si es de tipo north_east es un ingreso
+    if (tipo === "north_east"){
+        
+        //Hago que solo se muestre el seleccionable de categorias ingresos
+        divEgresoEdit.className = "mb-3 d-none";
+        divIngresoEdit.className = "mb-3";
+
+        //Indico que el tipo de item es INGRESO, valor usado en validarFormEditItem
+        tipoItem = "INGRESO";
+
+        //Cambio el titulo del modal a Editar Ingreso
+        editarItemLabel.textContent = "Editar Ingreso";
+
+        //Cargo la categoria del item
+        catIngresoEdit.value = categoria;
+    
+    //Si es de tipo west_east es un egreso
+    } else {
+
+        //Hago que solo se muestre el seleccionable de categorias ingresos
+        divEgresoEdit.className = "mb-3";
+        divIngresoEdit.className = "mb-3 d-none";
+
+        //Indico que el tipo de item es INGRESO, valor usado en validarFormEditItem
+        tipoItem = "EGRESO";
+        
+        //Cambio el titulo del modal a Editar Egreso
+        editarItemLabel.textContent = "Editar Egreso";
+
+        //Cargo la categoria del item
+        catEgresoEdit.value = categoria;
+
+    }
+    
+    //Cargo el nombre y el monto del item
+    nombreEdit.value = nombre;
+    montoEdit.value = monto.replaceAll(".","");
+
+}
+
+//Valido los datos editados por el usuario
+function validarFormEditItem(){
+
+    //Valido si el item es de tipo ingreso, la categoria no haya quedado vacía
+    if (tipoItem.toLowerCase() === "INGRESO" && catIngresoEdit.value.length === 0) {
+
+        alert("¡Falta ingresar categoria ingreso!");
+        continuar = false;
+
+    //Valido si el item es de tipo egreso, la categoria no haya quedado vacía
+    } else if (tipoItem.toLowerCase() === "EGRESO" && catEgresoEdit.value.length === 0) {
+
+        alert("¡Falta ingresar categoria egreso!");
+        continuar = false;
+
+    } else {
+
+        //Valido que el nombre no haya quedado vacío
+        if (nombreEdit.value.length === 0){
+
+            alert("¡Falta ingresar nombre!");
+            continuar = false;
+
+        //Valido que no haya un item con (categoria, nombre) iguales
+        } else if(existeItem(((tipoItem.toLowerCase() === "INGRESO") ? (catIngresoEdit.value) : (catEgresoEdit.value)), nombreEdit.value)) {
+
+            alert("¡No se puede ingresar más de un item con la misma categoria y nombre!");
+            continuar = false;
+
+        } else {
+
+            //Valido que el monto no haya quedado vacío
+            if (isNaN(parseFloat(montoEdit.value))){
+
+                alert("¡UPS! Monto Erroneo.");
+                continuar = false;
+                
+            //Valido que el monto no sea negativo
+            } else if (parseFloat(montoEdit.value) < 0) {
+
+                alert("¡El monto debe ser mayor a cero!");
+                continuar = false;
+
+            //Pasó las validaciones
+            } else {
+
+                continuar = true;
+
+            }
+        }    
+    }
+    
+}
+
+//Al cliquear en el boton "Editar Item" del modal Editar Item
+btnEditItem.onclick = () => {
+    //Seteo el continuar para limpiar valores previos
+    continuar = true;
+
+    //Valido los valores editados por el cliente
+    validarFormEditItem();
+
+    //Obtengo la linea de la tabla en cuestion
+    let lineaTabla = document.getElementById("item" + id); 
+    let celdas = lineaTabla.getElementsByTagName('td');
+    
+    //Edito los campos del item en la tabla
+    celdas[1].textContent = (tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value);
+    celdas[2].textContent = nombreEdit.value; 
+    celdas[3].textContent = parseFloat(montoEdit.value.replaceAll(",", ".")).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+    
+    //Edito los campos del item en el listado de items
+    lD.items[id-1].setCategoria((tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value));
+    lD.items[id-1].setNombre(nombreEdit.value);
+    lD.items[id-1].setMonto(parseFloat(montoEdit.value.replaceAll(",", ".")));
+
+    //Calculo nuevamente los totales
+    calcularTotales();
+    
+}
+
+//Obtenemos la información correspondiente al item a eliminar
+function cargarItemElim(nodo){
+    //Seteo el id para limpiar valores previos
+    id = "";
+    
+    //Obtengo los datos del item en cuestión
+    let nodoTd = nodo.parentNode; //Nodo TD
+    let nodoTr = nodoTd.parentNode; //Nodo TR
+    let nodosEnTr = nodoTr.getElementsByTagName('td');
+    
+    //Obtengo la categoria y nombre del item en cuestión
+    let nombre = nodosEnTr[2].textContent; 
+    let categoria = nodosEnTr[1].textContent;
+    
+    //Obtengo el id del item en función de su categoria y nombre
+    id = buscarIdItem(categoria, nombre); 
+
+}
+
+//Al cliquear en el boton "Eliminar Item" del modal Eliminar Item
+btnDeleteItem.onclick = () => {
+
+    //Selecciono la linea de la tabla del item en cuestión y la elimino
+    let lineaTabla = document.getElementById("item"+id);
+    lineaTabla.remove();
+
+    //Elimino el item en cuestion del listado de items
+    lD.items.splice(id-1,1);
+
+    //Calculo nuevamente los totales
+    calcularTotales();
+
+}
+
+function limpiarTabla(){
+
+    let cuerpoTabla = document.querySelector(".bodyTable");
+
+    while (cuerpoTabla.firstChild) {
+        
+        cuerpoTabla.removeChild(cuerpoTabla.firstChild);
+
+    }
+}
+
+function cargarTabla(items){
+    
+    for (const item of items) {
+
+        let lineaTabla = document.createElement("tr");
+        
+        //Le asigno un id para identificar al item
+        lineaTabla.id = "item" + item.id;
+    
+        let montoConvertido = item.monto.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+
+        //Definimos el innerHTML del elemento con una plantilla de texto
+        lineaTabla.innerHTML = `<td>${(item.tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons text-danger' style=''>south_west</i>") : 
+                                ("<i class='material-icons text-success' style=''>north_east</i>")}</td>
+                                <td>${item.categoria}</td>
+                                <td>${item.nombre}</td>
+                                <td>${montoConvertido}</td>
+                                <td><i class="material-icons icono iconEdit text-success" style="" data-bs-toggle="modal" onclick="cargarItemEdit(this)" data-bs-target="#editarItem">edit</i>
+                                <i class="material-icons icono text-danger" style="" data-bs-toggle="modal" onclick="cargarItemElim(this)" data-bs-target="#eliminarItem">delete</i></td>`;
+                     
+        let cuerpoTabla = document.querySelector(".bodyTable");
+        cuerpoTabla.appendChild(lineaTabla);
+    
+    }
+
+}
+
+//Al cliquear el botón de Buscar
+formularioBuscador.addEventListener("submit", buscarItems);
+
+//Buscar los items que aplican al filtro
+function buscarItems(e){
+
+    e.preventDefault();
+
+    //Declaro el array de items filtrados
+    let itemsFiltrados = [];
+
+    //Si el campo de nombre está vacío retorno mensaje de error
+    if(nombreABuscar.length === 0){
+
+        alert("No se ingresó nombre por el cual buscar.");
+
+    } else{ //Caso contrario, filtro
+
+        itemsFiltrados = lD.items.filter((item)=> item.nombre.includes(nombreABuscar.value));
+
+    }
+
+    //En caso de que no se hayan obtenido resultados
+    if (itemsFiltrados.length === 0){
+
+        alert("No se han encontrado items con el nombre / descripción ingresada.");  
+
+    } else { //Mostramos el array final filtrado en la tabla
+
+        limpiarTabla();
+        cargarTabla(itemsFiltrados);
+        
+    }
+}
+
+//Al cliquear el botón de Limpiar
+btnClean.onclick = () => {
+
+    //Limpio la tabla
+    limpiarTabla();
+
+    //Cargo la tabla con los datos del libro diario
+    cargarTabla(lD.items);
+
+    //Limpio el campo de Filtrado por Nombre
+    nombreABuscar.value = "";
+}
 

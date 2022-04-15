@@ -135,6 +135,7 @@ body{
 
 .icono{
   cursor: pointer;
+  font-size:18px;
 }
 
 .nav-pills .nav-item .nav-link:hover{
@@ -144,6 +145,10 @@ body{
 .item-active{
   background-color: var(--hover-bg-color) !important;
 }
+.buscador{
+  width: 300px;
+}
+
 
 @media (min-width: 1000px){
   #sidebar-wrapper {
@@ -169,3 +174,4 @@ body{
       -ms-overflow-style: -ms-autohiding-scrollbar;
   }
 }
+

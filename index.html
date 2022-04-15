@@ -83,7 +83,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div>
-                                <h3 class="fs-4" id="cantItems">0</h3>
+                                <h3 class="fs-5" id="cantItems">0</h3>
                                 <p class="fs-6">Total de Items</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3">tag</i>
@@ -93,7 +93,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div class="">
-                                <h3 class="fs-4" id="totalIng">0,00</h3>
+                                <h3 class="fs-5" id="totalIng">0,00</h3>
                                 <p class="fs-6">Total Ingresos</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3" style="color: green;">north_east</i>
@@ -103,7 +103,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div>
-                                <h3 class="fs-4" id="totalEgr">0,00</h3>
+                                <h3 class="fs-5" id="totalEgr">0,00</h3>
                                 <p class="fs-6">Total Egresos</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3" style="color: red;">south_west</i>
@@ -113,7 +113,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div class="h-100 p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                             <div>
-                                <h3 class="fs-4" id="totalBal">0,00</h3>
+                                <h3 class="fs-5" id="totalBal">0,00</h3>
                                 <p class="fs-6">Balance</p>
                             </div>
                             <i class="material-icons fs-1 icon-color border rounded-full therd-bg p-3">account_balance</i>
@@ -129,17 +129,25 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="row">
-                                            <div class="col d-flex justify-content-start">
-                                                <h4 class="title-text font-text">Detalle Ingresos - Egresos</h4>
+                                            <div class="col d-flex justify-content-start align-items-center">
+                                                <h4 class="title-text font-text pb-0 mb-0">Detalle Ingresos - Egresos</h4>
                                             </div>
                                             <div class="col d-flex justify-content-end">
                                                 <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                                    data-bs-target="#agregarItem">
+                                                    data-bs-target="#agregarItem" id="btn-modalAddItem">
                                                     Agregar Item
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="card mt-3 shadow-sm">
+                                        <div class="row">
+                                            <hr class="mt-2">
+                                            <form id="formularioBuscador" class="col d-flex justify-content-start mb-3">
+                                                <input id="buscarXNombre" class="form-control buscador me-2" type="search" placeholder="Filtrar por Nombre" aria-label="Search">
+                                                <button class="btn btn-success" id="btn-Search" type="submit">Buscar</button>
+                                                <button class="btn btn-success ms-2" id="btn-Clean" type="button">Limpiar</button>
+                                              </form>
+                                        </div>
+                                        <div class="card mt-0 shadow-sm">
                                             <div class="card-body py-0 px-2">
                                               <div class="table-responsive">
                                                 <table class="table table-responsive zero-configuration mt-3 rounded text-center normal-color">
@@ -152,9 +160,7 @@
                                                                 <th>Acciones</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody class="bodyTable">
-                                                            
-                                                        </tbody>
+                                                        <tbody class="bodyTable"></tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -184,27 +190,28 @@
                     <!------ Formulario Nuevo Elemento ------->
                     <form>
                         <div class="mb-3">
-                            <label for="TipoElemento" class="form-label">Indique el tipo de Item</label>
+                            <label for="TipoElemento" class="form-label">Indique el Tipo de Item</label>
                             <br />
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="TipoElemento" id="TipoElemento1"
+                                <input class="form-check-input" type="radio" name="TipoElemento" id="tipoIngreso"
                                     value="option1" checked>
-                                <label class="form-check-label" for="TipoElemento">
+                                <label class="form-check-label" for="tipoIngreso">
                                     Ingreso
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="TipoElemento" id="TipoElemento2"
+                                <input class="form-check-input" type="radio" name="TipoElemento" id="tipoEgreso"
                                     value="option2">
-                                <label class="form-check-label" for="TipoElemento">
+                                <label class="form-check-label" for="tipoEgreso">
                                     Egreso
                                 </label>
                             </div>
                             <!-- <div id="TipoElemAyuda" class="form-text">Indique el tipo de item: Ingreso/Egreso.</div> -->
                         </div>
-                        <div class="mb-3">
-                            <label for="CatIngreso" class="form-label">Seleccione la Categoria de Ingreso</label>
-                            <select id="CatIngreso" class="form-select">
+                        <div id="div-Ingreso" class="mb-3">
+                            <label for="catIngreso" class="form-label">Seleccione Categoria de Ingreso</label>
+                            <select id="catIngreso" class="form-select">
+                                <option></option>
                                 <option>Sueldo</option>
                                 <option>Aguinaldo</option>
                                 <option>Ingresos Extra</option>
@@ -220,9 +227,10 @@
                             </select>
                             <!-- <div id="CatIngAyuda" class="form-text">Indique la categoria del Ingreso.</div> -->
                         </div>
-                        <div class="mb-3">
-                            <label for="CatEgreso" class="form-label">Seleccione la Categoria de Egreso</label>
-                            <select id="CatEgreso" class="form-select">
+                        <div id="div-Egreso" class="mb-3">
+                            <label for="catEgreso" class="form-label">Seleccione Categoria de Egreso</label>
+                            <select id="catEgreso" class="form-select">
+                                <option></option>
                                 <option>Comida</option>
                                 <option>Deportes</option>
                                 <option>Deudas</option>
@@ -243,20 +251,20 @@
                             <!-- <div id="CatEgrAyuda" class="form-text">Indique la categoria del Egreso.</div> -->
                         </div>
                         <div class="mb-3">
-                            <label for="Nombre" class="form-label">Ingrese el Nombre</label>
-                            <input type="text" class="form-control" id="Nombre" aria-describedby="NombreHelp">
+                            <label for="nombre" class="form-label">Ingrese el Nombre</label>
+                            <input type="text" class="form-control" id="nombre" aria-describedby="NombreHelp">
                             <!-- <div id="NombreHelp" class="form-text">Ingrese nombre del Ingreso/Egreso.</div> -->
                         </div>
                         <div class="mb-3">
-                            <label for="Monto" class="form-label">Ingrese el Monto</label>
-                            <input type="text" class="form-control" id="Monto" aria-describedby="MontoHelp">
+                            <label for="monto" class="form-label">Ingrese el Monto</label>
+                            <input type="text" class="form-control" id="monto" aria-describedby="MontoHelp">
                             <!-- <div id="MontoHelp" class="form-text">Ingrese el monto.</div> -->
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success">Agregar Item</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-addItem">Agregar Item</button>
                 </div>
             </div>
         </div>
@@ -304,28 +312,29 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success">Agregar Item</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-ChangeDate">Cambiar Fecha</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- modal de editar item ingreso -->
-    <div class="modal fade" id="editarIngreso" tabindex="-1" aria-labelledby="editarIngresoLabel" aria-hidden="true">
+    <div class="modal fade" id="editarItem" tabindex="-1" aria-labelledby="editarItemLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-light">
-                    <h5 class="modal-title" id="editarIngresoLabel">Editar Ingreso</h5>
+                    <h5 class="modal-title" id="editarItemLabel">Editar Ingreso</h5>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!------ Formulario Editar Elemento ------->
                     <form>
-                        <div class="mb-3">
-                            <label for="CatIngreso" class="form-label">Categoria de Ingreso</label>
-                            <select id="CatIngreso" class="form-select">
+                        <div id="div-IngresoEdit" class="mb-3">
+                            <label for="catIngresoEdit" class="form-label">Categoria</label>
+                            <select id="catIngresoEdit" class="form-select">
+                                <option></option>
                                 <option>Sueldo</option>
                                 <option>Aguinaldo</option>
                                 <option>Ingresos Extra</option>
@@ -341,41 +350,10 @@
                             </select>
                             <!-- <div id="CatIngAyuda" class="form-text">Indique la categoria del Ingreso.</div> -->
                         </div>
-                        <div class="mb-3">
-                            <label for="Nombre" class="form-label">Nombre del Ingreso</label>
-                            <input type="text" class="form-control" id="Nombre" aria-describedby="NombreHelp">
-                            <!-- <div id="NombreHelp" class="form-text">Ingrese nombre del Ingreso/Egreso.</div> -->
-                        </div>
-                        <div class="mb-3">
-                            <label for="Monto" class="form-label">Monto del Ingreso</label>
-                            <input type="text" class="form-control" id="Monto" aria-describedby="MontoHelp">
-                            <!-- <div id="MontoHelp" class="form-text">Ingrese el monto.</div> -->
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success">Editar Ingreso</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- modal de editar item egreso -->
-    <div class="modal fade" id="editarEgreso" tabindex="-1" aria-labelledby="editarEgresoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title" id="editarEgresoLabel">Editar Egreso</h5>
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!------ Formulario Editar Elemento ------->
-                    <form>
-                        <div class="mb-3">
-                            <label for="CatEgreso" class="form-label">Categoria de Egreso</label>
-                            <select id="CatEgreso" class="form-select">
+                        <div id="div-EgresoEdit" class="mb-3">
+                            <label for="catEgresoEdit" class="form-label">Categoria</label>
+                            <select id="catEgresoEdit" class="form-select">
+                                <option></option>
                                 <option>Comida</option>
                                 <option>Deportes</option>
                                 <option>Deudas</option>
@@ -396,25 +374,45 @@
                             <!-- <div id="CatIngAyuda" class="form-text">Indique la categoria del Ingreso.</div> -->
                         </div>
                         <div class="mb-3">
-                            <label for="Nombre" class="form-label">Nombre del Egreso</label>
-                            <input type="text" class="form-control" id="Nombre" aria-describedby="NombreHelp">
+                            <label for="nombreEdit" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombreEdit" aria-describedby="nombreHelp">
                             <!-- <div id="NombreHelp" class="form-text">Ingrese nombre del Ingreso/Egreso.</div> -->
                         </div>
                         <div class="mb-3">
-                            <label for="Monto" class="form-label">Monto del Egreso</label>
-                            <input type="text" class="form-control" id="Monto" aria-describedby="MontoHelp">
+                            <label for="montoEdit" class="form-label">Monto</label>
+                            <input type="text" class="form-control" id="montoEdit" aria-describedby="montoHelp">
                             <!-- <div id="MontoHelp" class="form-text">Ingrese el monto.</div> -->
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success">Editar Egreso</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-editItem">Editar Item</button>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- modal eliminar item -->
+    <div class="modal fade" id="eliminarItem" tabindex="-1" aria-labelledby="eliminarItemLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="eliminarItemLabel">Eliminar Item</h5>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estas seguro que deseas eliminar este item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btn-DeleteItem" data-bs-dismiss="modal">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--scripts bootstrap--> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 
