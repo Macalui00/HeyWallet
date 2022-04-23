@@ -1,4 +1,4 @@
- //Clase Item
+//Clase Item - (id, tipo, categoria, nombre, monto)
 class Item{
             
     //Metodo Constructor
@@ -10,6 +10,7 @@ class Item{
         this.monto = monto;
     }
 
+    //Metodos
     detalleItem(){
         return "Categoria: " + this.categoria + ", Nombre: " + this.nombre + ", monto: " + this.monto;
     }
@@ -47,7 +48,7 @@ class Item{
     }
 }
 
-//Clase Libro diario - (mes, anio)
+//Clase Libro diario - (mes, anio, items)
 class LibroDiario{
 
     //Metodo Constructor
@@ -118,6 +119,7 @@ function obtenerLD(mes, anio){
             return new LibroDiario(libro.mes, libro.anio, libro.items);
 
         }
+        
     }
 
     //No existe el libro diario para ese mes y anio
@@ -233,20 +235,20 @@ let selecMes = document.getElementById("selecMes");
 //Utilizados en la edición y eliminación de un item
 let id, tipoItem;
 
-//Configuro la cabecera del index
-cabecera.textContent = `Balance - ${lD.mes} ${lD.anio}`;
+//Configuro la cabecera del index //Uso de optimización de asignación de variables
+cabecera.textContent = `Balance - ${lD?.mes || mesActualNombre} ${lD?.anio || anioActual}`;
 
 //Seteo la tabla y los totales para el momento de volver a acceder a la pagina web
-
 //Cargo la tabla con los datos del libro diario
 cargarTabla(lD.items);
 
+//Calculo los totales con los datos del libro diario
 calcularTotales();
 
 //Al cliquear el botón de Cambio de Fecha
-btnDate.onclick = () => {
-    selecAnio.value = lD.anio;
-    selecMes.value = lD.mes;
+btnDate.onclick = () => { //Uso de optimización de asignación de variables
+    selecAnio.value = lD?.anio || anioActual;
+    selecMes.value = lD?.mes || mesActualNombre;
 }
 
 //Al cliquear el botón de Cambiar Fecha en el Modal
@@ -262,7 +264,7 @@ btnChangeDate.onclick = () => {
     let mesIngrNombre = selecMes.value.toLocaleString("es-AR", { month: "long" });
 
     //Chequeo que el mes y el año no superen el mes y año actual, solo se admiten mes y año previos
-    if ( ((mesIngrNumero <= date.getMonth()) && (anioIngresado === date.getMonth())) || (parseInt(selecAnio.value) < date.getFullYear()) ) {
+    if ( ((mesIngrNumero <= date.getMonth()) && (anioIngresado === date.getFullYear())) || (parseInt(selecAnio.value) < date.getFullYear()) ) {
 
         //Si ya existe un libro diario para un mes y año en particular
         if (existeLD(mesIngrNombre, anioIngresado)){
@@ -292,7 +294,7 @@ btnChangeDate.onclick = () => {
         }
 
         //Cambio de cabecera
-        cabecera.textContent = "Balance - " + lD.mes + " " + lD.anio;
+        cabecera.textContent = "Balance - " + lD?.mes || mesActualNombre + " " + lD?.anio || anioActual;
 
         //Limpio la tabla
         limpiarTabla();
@@ -337,11 +339,11 @@ btnModalAddItem.onclick = () => {
 }
 
 //Verifico si existe el item con determinado nombre y categoria retorno true
-function existeItem(catItem, nombreItem){
+function existeItem(idItem, catItem, nombreItem){
     for(const item of lD.items){
 
         //Si existe el item con tal nombre y categoria retorno true
-        if (item.nombre === nombreItem && item.categoria === catItem){
+        if (item.nombre === nombreItem && item.categoria === catItem && idItem !== item.id){
 
             return true;
 
@@ -376,7 +378,7 @@ function validarFormAgrItem(){
             continuar = false;
 
         //Valido que no haya un item con (categoria, nombre) iguales
-        } else if(existeItem(((tipoIngreso.checked) ? (catIngreso.value) : (catEgreso.value)), nombre.value)) {
+        } else if(existeItem(id,((tipoIngreso.checked) ? (catIngreso.value) : (catEgreso.value)), nombre.value)) {
 
             alert("¡No se puede ingresar más de un item con la misma categoria y nombre!");
             continuar = false;
@@ -445,15 +447,18 @@ function agregarItemATabla(){
     //Creo la linea de la tabla en la que colocaré el item
     let lineaTabla = document.createElement("tr");
 
-    //Le asigno un id para identificar al item
-    lineaTabla.id = "item" + item.id;
+    //Desestructuro el item + uso de alias
+    let {id: itemId, tipo, categoria, nombre, monto} = item;
 
-    let montoConvertido = item.monto.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+    //Le asigno un id para identificar al item
+    lineaTabla.id = "item" + itemId;
+
+    let montoConvertido = monto.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
     //Definimos el innerHTML del elemento con una plantilla de texto
-    lineaTabla.innerHTML = `<td>${(item.tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons text-danger' style=''>south_west</i>") : 
+    lineaTabla.innerHTML = `<td>${(tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons text-danger' style=''>south_west</i>") : 
                             ("<i class='material-icons text-success' style=''>north_east</i>")}</td>
-                            <td>${item.categoria}</td>
-                            <td>${item.nombre}</td>
+                            <td>${categoria}</td>
+                            <td>${nombre}</td>
                             <td>${montoConvertido}</td>
                             <td><i class="material-icons icono iconEdit text-success" style="" data-bs-toggle="modal" onclick="cargarItemEdit(this)" data-bs-target="#editarItem">edit</i>
                             <i class="material-icons icono text-danger" style="" data-bs-toggle="modal" onclick="cargarItemElim(this)" data-bs-target="#eliminarItem">delete</i></td>`;
@@ -470,13 +475,13 @@ function agregarItemATabla(){
 function calcularTotales(){
 
     //Calculo y muestro la cantidad de items
-    cantItems.innerText = lD.items.length;
+    cantItems.innerText = lD?.items?.length || 0;
     
     //Calculo y muestro el total de ingresos
-    totalIng.innerText = calcularTotal(lD.obtenerIngresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+    totalIng.innerText = calcularTotal(lD?.obtenerIngresos() || 0).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
 
     //Calculo y muestro el total de egresos
-    totalEgr.innerText = calcularTotal(lD.obtenerEgresos()).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+    totalEgr.innerText = calcularTotal(lD?.obtenerEgresos() || 0).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
 
     lD.calcularBalance();
 
@@ -492,7 +497,7 @@ function calcularTotales(){
 btnAddItem.onclick = () => {
 
     //Valido que los datos ingresados en el formulario esten correctos
-    validarFormAgrItem();
+    validarFormAgrItem(id);
      
     //Verifico si el tipo de item indicado es un Ingreso 
     if (tipoIngreso.checked) {
@@ -623,13 +628,13 @@ function cargarItemEdit(nodo){
 function validarFormEditItem(){
 
     //Valido si el item es de tipo ingreso, la categoria no haya quedado vacía
-    if (tipoItem.toLowerCase() === "INGRESO" && catIngresoEdit.value.length === 0) {
+    if (tipoItem.toUpperCase() === "INGRESO" && catIngresoEdit.value.length === 0) {
 
         alert("¡Falta ingresar categoria ingreso!");
         continuar = false;
 
     //Valido si el item es de tipo egreso, la categoria no haya quedado vacía
-    } else if (tipoItem.toLowerCase() === "EGRESO" && catEgresoEdit.value.length === 0) {
+    } else if (tipoItem.toUpperCase() === "EGRESO" && catEgresoEdit.value.length === 0) {
 
         alert("¡Falta ingresar categoria egreso!");
         continuar = false;
@@ -643,7 +648,7 @@ function validarFormEditItem(){
             continuar = false;
 
         //Valido que no haya un item con (categoria, nombre) iguales
-        } else if(existeItem(((tipoItem.toLowerCase() === "INGRESO") ? (catIngresoEdit.value) : (catEgresoEdit.value)), nombreEdit.value)) {
+        } else if(existeItem(id,((tipoItem.toUpperCase() === "INGRESO") ? (catIngresoEdit.value) : (catEgresoEdit.value)), nombreEdit.value)) {
 
             alert("¡No se puede ingresar más de un item con la misma categoria y nombre!");
             continuar = false;
@@ -681,30 +686,38 @@ btnEditItem.onclick = () => {
     //Valido los valores editados por el cliente
     validarFormEditItem();
 
-    //Obtengo la linea de la tabla en cuestion
-    let lineaTabla = document.getElementById("item" + id); 
-    let celdas = lineaTabla.getElementsByTagName('td');
-    
-    //Edito los campos del item en la tabla
-    celdas[1].textContent = (tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value);
-    celdas[2].textContent = nombreEdit.value; 
-    celdas[3].textContent = parseFloat(montoEdit.value.replaceAll(",", ".")).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-    
-    //Edito los campos del item en el listado de items
-    lD.items[id-1].setCategoria((tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value));
-    lD.items[id-1].setNombre(nombreEdit.value);
-    lD.items[id-1].setMonto(parseFloat(montoEdit.value.replaceAll(",", ".")));
-    
-    //Calculo nuevamente los totales
-    calcularTotales();
+    //Si hubieron errores en la validación, no avanzo con la modificacion
+    if (continuar){
+        //Obtengo la linea de la tabla en cuestion
+        let lineaTabla = document.getElementById("item" + id); 
+        let celdas = lineaTabla.getElementsByTagName('td');
+        
+        //Edito los campos del item en la tabla
+        celdas[1].textContent = (tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value);
+        celdas[2].textContent = nombreEdit.value; 
+        celdas[3].textContent = parseFloat(montoEdit.value.replaceAll(",", ".")).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+        
+        const item = new Item (lD.items[id-1].id, lD.items[id-1].tipo, lD.items[id-1].categoria, lD.items[id-1].nombre, lD.items[id-1].monto);
+        
+        //Edito los campos del item en el listado de items
+        item.setCategoria((tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value));
+        item.setNombre(nombreEdit.value);
+        item.setMonto(parseFloat(montoEdit.value.replaceAll(",", ".")));
 
-    if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
-        //Actualizo el libro diario actual
-        libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+        lD.items[id-1] = item;
+        
+        //Calculo nuevamente los totales
+        calcularTotales();
 
-        //Actualizo el Libro Diario Anual en el Local Storage
-        localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
-    }    
+        if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+            //Actualizo el libro diario actual
+            libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+            //Actualizo el Libro Diario Anual en el Local Storage
+            localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+        }    
+    }
+    
 
 }
 
@@ -765,22 +778,28 @@ function cargarTabla(items){
     
     for (const item of items) {
 
+        //Creo una nueva linea en la tabla
         let lineaTabla = document.createElement("tr");
-        
+
+        //Desestructuro el item + uso de alias
+        let {id: itemId, tipo, categoria, nombre, monto} = item;
+
         //Le asigno un id para identificar al item
-        lineaTabla.id = "item" + item.id;
+        lineaTabla.id = "item" + itemId;
     
-        let montoConvertido = item.monto.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+        //Convierto el monto al formato deseado
+        let montoConvertido = monto.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
 
         //Definimos el innerHTML del elemento con una plantilla de texto
-        lineaTabla.innerHTML = `<td>${(item.tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons text-danger' style=''>south_west</i>") : 
+        lineaTabla.innerHTML = `<td>${(tipo.toUpperCase() === "EGRESO") ? ("<i class='material-icons text-danger' style=''>south_west</i>") : 
                                 ("<i class='material-icons text-success' style=''>north_east</i>")}</td>
-                                <td>${item.categoria}</td>
-                                <td>${item.nombre}</td>
+                                <td>${categoria}</td>
+                                <td>${nombre}</td>
                                 <td>${montoConvertido}</td>
                                 <td><i class="material-icons icono iconEdit text-success" style="" data-bs-toggle="modal" onclick="cargarItemEdit(this)" data-bs-target="#editarItem">edit</i>
                                 <i class="material-icons icono text-danger" style="" data-bs-toggle="modal" onclick="cargarItemElim(this)" data-bs-target="#eliminarItem">delete</i></td>`;
-                     
+        
+        //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
         let cuerpoTabla = document.querySelector(".bodyTable");
         cuerpoTabla.appendChild(lineaTabla);
     
