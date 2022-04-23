@@ -1,4 +1,4 @@
-//Clase Item
+ //Clase Item
 class Item{
             
     //Metodo Constructor
@@ -92,18 +92,93 @@ function calcularTotal(items){
 
     return total;
 }
+//Verifico si existe el libro diario para ese mes y anio
+function existeLD(mes, anio){
+    for(const libro of libroDiarioAnual){
+        
+        //Si existe el libro diario para ese mes y anio
+        if (libro.mes === mes && libro.anio === anio){
 
-const libroDiarioAnual = [];
+            return true;
+
+        }
+    }
+
+    //No existe el libro diario para ese mes y anio
+    return false;
+}
+
+//Obtengo el libro diario del mes y anio
+function obtenerLD(mes, anio){
+    for(const libro of libroDiarioAnual){  
+
+        //Si existe el libro diario para ese mes y anio
+        if (libro.mes === mes && libro.anio === anio){
+
+            return new LibroDiario(libro.mes, libro.anio, libro.items);
+
+        }
+    }
+
+    //No existe el libro diario para ese mes y anio
+    return {};
+}
+
+//Obtengo el libro diario del mes y anio
+function obtenerIDLibroDiario(mes, anio){
+    
+    for(let i = 0; i < libroDiarioAnual.length; i++){  
+        
+        //Si existe el libro diario para ese mes y anio
+        if (libroDiarioAnual[i].mes === mes && libroDiarioAnual[i].anio === anio){
+
+            return i;
+
+        }
+    }
+
+    //No existe el libro diario para ese mes y anio
+    return -1;
+}
+
+
+//Obtengo el Libro Diario Actual
+function obtenerLibroDiarioAct(mes, anio){
+    
+    if (existeLD(mes, anio)){
+
+        //Retorno el libro diario en cuestion
+        return obtenerLD(mes, anio);
+
+    } else {
+
+        //Defino la variable de Libro Diario Actual por default
+        const libroDiarioAct = new LibroDiario(mes, anio, []);
+            
+        //Agrego el Libro Diario del Mes Actual al Listado
+        libroDiarioAnual.push(libroDiarioAct);
+
+        //Actualizo el Libro Diario Anual en el Local Storage
+        localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+
+        //Retorno el libro diario en cuestion
+        return libroDiarioAct;
+    }
+   
+}
+
+//Defino el libro diario anual
+const libroDiarioAnual = (localStorage.getItem('libroDiarioAnual') === null ) ? [] : JSON.parse(localStorage.getItem('libroDiarioAnual'));
+
 //Obtengo la fecha actual
 const date = new Date();
+let mesActualNombre = date.toLocaleString("es-AR", { month: "long" });
+let anioActual = date.getFullYear();
 
 //Definimos ingresos, egresos y el balance
-let lD = new LibroDiario(date.toLocaleString("es-AR", { month: "long" }), date.getFullYear(), []);
+let lD = obtenerLibroDiarioAct(mesActualNombre, anioActual);
 
-//Agrego el libro diario del mes actual al listado
-libroDiarioAnual.push(lD);
-   
-//obtengo los elementos del DOM que voy a utilizar
+//Obtengo los elementos del DOM que voy a utilizar
 //Elemento de cabecera
 let cabecera = document.getElementById("cabecera");
 
@@ -159,44 +234,19 @@ let selecMes = document.getElementById("selecMes");
 let id, tipoItem;
 
 //Configuro la cabecera del index
-cabecera.textContent = "Balance - " + lD.mes + " " + lD.anio;
+cabecera.textContent = `Balance - ${lD.mes} ${lD.anio}`;
+
+//Seteo la tabla y los totales para el momento de volver a acceder a la pagina web
+
+//Cargo la tabla con los datos del libro diario
+cargarTabla(lD.items);
+
+calcularTotales();
 
 //Al cliquear el botón de Cambio de Fecha
 btnDate.onclick = () => {
     selecAnio.value = lD.anio;
     selecMes.value = lD.mes;
-}
-
-//Verifico si existe el libro diario para ese mes y anio
-function existeLD(mes, anio){
-    for(const libro of libroDiarioAnual){
-        
-        //Si existe el libro diario para ese mes y anio
-        if (libro.mes === mes && libro.anio === anio){
-
-            return true;
-
-        }
-    }
-
-    //No existe el libro diario para ese mes y anio
-    return false;
-}
-
-//Obtengo el libro diario del mes y anio
-function obtenerLD(mes, anio){
-    for(const libro of libroDiarioAnual){  
-
-        //Si existe el libro diario para ese mes y anio
-        if (libro.mes === mes && libro.anio === anio){
-
-            return libro;
-
-        }
-    }
-
-    //No existe el libro diario para ese mes y anio
-    return {};
 }
 
 //Al cliquear el botón de Cambiar Fecha en el Modal
@@ -206,14 +256,13 @@ btnChangeDate.onclick = () => {
     const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
     //Mes ingresado en formato múmero (1, 2, 3, etc.)
     let mesIngrNumero = mesesAnio.indexOf(selecMes.value);
-    let mesActual = date.getMonth();
     let anioIngresado = parseInt(selecAnio.value);
-    let anioActual = date.getFullYear();
+    
     //Mes ingresado en formato nombre (enero, febrero, marzo, etc.)
     let mesIngrNombre = selecMes.value.toLocaleString("es-AR", { month: "long" });
 
     //Chequeo que el mes y el año no superen el mes y año actual, solo se admiten mes y año previos
-    if ( ((mesIngrNumero <= mesActual) && (anioIngresado === anioActual)) || (parseInt(selecAnio.value) < date.getFullYear()) ) {
+    if ( ((mesIngrNumero <= date.getMonth()) && (anioIngresado === date.getMonth())) || (parseInt(selecAnio.value) < date.getFullYear()) ) {
 
         //Si ya existe un libro diario para un mes y año en particular
         if (existeLD(mesIngrNombre, anioIngresado)){
@@ -221,13 +270,24 @@ btnChangeDate.onclick = () => {
             //Obtengo ese libro diario para visualizarlo.
             lD = obtenerLD(mesIngrNombre, anioIngresado);
 
+            //Actualizar mes y anio
+            mesActualNombre = mesIngrNombre;
+            anioActual = anioIngresado;
+
         } else {
 
             //Creo el libro diario
             libroDiarioAnual.push(new LibroDiario(mesIngrNombre, anioIngresado, []));
 
+            //Actualizo el Libro Diario Anual en el Local Storage
+            localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+
             //Agrego el libro diario del mes actual al listado
             lD = obtenerLD(mesIngrNombre, anioIngresado);        
+
+            //Actualizar mes y anio
+            mesActualNombre = mesIngrNombre;
+            anioActual = anioIngresado;
 
         }
 
@@ -239,6 +299,9 @@ btnChangeDate.onclick = () => {
 
         //Cargo la tabla con los datos del libro diario
         cargarTabla(lD.items);
+
+        //Calculo nuevamente los totales
+        calcularTotales();
 
     } else { //Si el mes y el año superen el mes y año actual, indigo fecha erronea.
 
@@ -427,7 +490,7 @@ function calcularTotales(){
 
 //Al cliquear en el boton "Agregar Item" del modal Agregar Item
 btnAddItem.onclick = () => {
-    
+
     //Valido que los datos ingresados en el formulario esten correctos
     validarFormAgrItem();
      
@@ -438,7 +501,7 @@ btnAddItem.onclick = () => {
             
             //Creo el item en el listado de items
             lD.items.push(new Item(lD.items.length+1,"INGRESO", catIngreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
-            
+                        
             //Limpio los campos del modal
             limpiarFormAgrItem();
 
@@ -448,8 +511,16 @@ btnAddItem.onclick = () => {
             //calculo los totales
             calcularTotales();
 
+            if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+                //Actualizo el libro diario actual
+                libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+                //Actualizo el Libro Diario Anual en el Local Storage
+                localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+            }
+
         }
-    
+        
     //Caso contrario es un Egreso 
     } else {
         
@@ -457,7 +528,7 @@ btnAddItem.onclick = () => {
              
             //Creo el item en el listado de items
             lD.items.push(new Item(lD.items.length+1,"EGRESO", catEgreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
-            
+
             //Limpio los campos del modal
             limpiarFormAgrItem();
 
@@ -467,7 +538,16 @@ btnAddItem.onclick = () => {
             //calculo los totales
             calcularTotales();
 
+            if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+                //Actualizo el libro diario actual
+                libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+                //Actualizo el Libro Diario Anual en el Local Storage
+                localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+            }
+
         }
+        
     }
     
 
@@ -614,10 +694,18 @@ btnEditItem.onclick = () => {
     lD.items[id-1].setCategoria((tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value));
     lD.items[id-1].setNombre(nombreEdit.value);
     lD.items[id-1].setMonto(parseFloat(montoEdit.value.replaceAll(",", ".")));
-
+    
     //Calculo nuevamente los totales
     calcularTotales();
-    
+
+    if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+        //Actualizo el libro diario actual
+        libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+        //Actualizo el Libro Diario Anual en el Local Storage
+        localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+    }    
+
 }
 
 //Obtenemos la información correspondiente al item a eliminar
@@ -648,9 +736,17 @@ btnDeleteItem.onclick = () => {
 
     //Elimino el item en cuestion del listado de items
     lD.items.splice(id-1,1);
-
+        
     //Calculo nuevamente los totales
     calcularTotales();
+
+    if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+        //Actualizo el libro diario actual
+        libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+        //Actualizo el Libro Diario Anual en el Local Storage
+        localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+    }
 
 }
 
@@ -739,4 +835,3 @@ btnClean.onclick = () => {
     //Limpio el campo de Filtrado por Nombre
     nombreABuscar.value = "";
 }
-
