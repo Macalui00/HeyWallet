@@ -1,4 +1,3 @@
-
 //Calculo el total del listado items
 function obtenerMontos(items){
     const montos = [];
@@ -233,8 +232,8 @@ function calcularTotales(){
     //Calculo y muestro la cantidad de items
     cantItems.innerText = lD?.items?.length || 0;
 
-    const ingresos = (lD?.obtenerIngresos() || 0);
-    const egresos = (lD?.obtenerEgresos() || 0);
+    const ingresos = (lD?.obtenerIngresos() || []);
+    const egresos = (lD?.obtenerEgresos() || []);
     
     //Calculo y muestro el total de ingresos
     totalIng.innerText = calcularTotal(obtenerMontos(ingresos)).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
