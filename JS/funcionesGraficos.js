@@ -126,19 +126,26 @@ function obtenerCategoriasEgresos(libroDA, anio){
 // obtener los totales de las categorias de ingresos para un libro diario de un año particular
 function obtenerTotalesCategIngr(libroDA, categorias, anio){
     const totalesCateg = [];
+    
+    categorias.forEach((categoria)=>{
+        let total = 0;
 
-    libroDA.forEach((libroDM) =>{
-        if (libroDM.anio === anio){
-            libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
+        libroDA.forEach((libroDM) =>{
 
-            const ingresos = (libroDM?.obtenerIngresos() || []);
+            if (libroDM.anio === anio){
 
-            categorias.forEach((categoria)=>{
-                let total = calcularTotal(obtenerMontos(ingresos.filter((item)=> item.categoria === categoria)));
-                totalesCateg.push(total);
-            });
-           
-        }
+                libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
+                
+                const ingresos = (libroDM?.obtenerIngresos() || []);
+
+                total = total + calcularTotal(obtenerMontos(ingresos.filter((item)=> item.categoria === categoria)));
+               
+            }
+            
+        });
+
+        totalesCateg.push(total);
+
     });
 
     return totalesCateg;
@@ -147,19 +154,26 @@ function obtenerTotalesCategIngr(libroDA, categorias, anio){
 // obtener los totales de las categorias de egresos para un libro diario de un año particular
 function obtenerTotalesCategEgr(libroDA, categorias, anio){
     const totalesCateg = [];
+       
+    categorias.forEach((categoria)=>{
+        let total = 0;
 
-    libroDA.forEach((libroDM) =>{
-        if (libroDM.anio === anio){
-            libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
+        libroDA.forEach((libroDM) =>{
 
-            const egresos = (libroDM?.obtenerEgresos() || []);
+            if (libroDM.anio === anio){
 
-            categorias.forEach((categoria)=>{
-                let total = calcularTotal(obtenerMontos(egresos.filter((item)=> item.categoria === categoria)));
-                totalesCateg.push(total);
-            });
-           
-        }
+                libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
+                
+                const egresos = (libroDM?.obtenerEgresos() || []);
+
+                total = total + calcularTotal(obtenerMontos(egresos.filter((item)=> item.categoria === categoria)));
+               
+            }
+            
+        });
+
+        totalesCateg.push(total);
+
     });
 
     return totalesCateg;

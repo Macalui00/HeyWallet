@@ -60,11 +60,11 @@ let grafica1 = new Chart($grafica, {
     },
     options: {
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }],
+            // yAxes: [{
+            //     ticks: {
+            //         beginAtZero: true
+            //     }
+            // }],
         },
         plugins: {
             title: {
@@ -116,11 +116,11 @@ const grafica2 = new Chart($grafica2, {
     },
     options: {
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }],
+            // yAxes: [{
+            //     ticks: {
+            //         beginAtZero: true
+            //     }
+            // }],
         },
         plugins: {
             title: {
