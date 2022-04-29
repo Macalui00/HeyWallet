@@ -16,3 +16,9 @@ Luego se pueden agregar items, asi como editarlos y eliminarlos. También pueden
 En la parte de los totales se veran los siguientes totales: cantidad total de items, monto total de ingresos, monto total de egresos y el balance final, el cual se pondrá en verde en caso de ser positivo y en rojo en caso de ser negativo. 
 
 Finalmente en la tabla se muestra el detalle de los items ingresados por el usuario para el mes y año indicado en el header. Y como se mencionó, ira cambiando en base a los filtrados, cambios de periodos y/o agregados y/o eliminados de items.
+
+Se agregó toda la logica para la visualización de gráficos de los ingresos y egresos a lo largo de un año. Se puede cambiar de año desde la tuerquita del header.
+
+## LIBRERIAS
+
+Se inclueron las librerias de Sweet y Luxon.
