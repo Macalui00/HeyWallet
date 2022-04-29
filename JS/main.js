@@ -188,7 +188,7 @@ btnAddItem.onclick = () => {
         if (continuar){
             
             //Creo el item en el listado de items
-            lD.items.push(new Item(lD.items[(lD.items.length-1)].id+1,"INGRESO", catIngreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
+            lD.items.push(new Item(lD.items[(lD?.items[(lD?.items?.length-1 || 0)]?.id+1|| 0),"INGRESO", catIngreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
                         
             //Limpio los campos del modal
             limpiarFormAgrItem();
