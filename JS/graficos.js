@@ -74,6 +74,7 @@ const grafica1 = new Chart($grafica, {
                 text: 'Comparativa Ingresos vs Egresos',
                 color: "#009d63",
                 font: {
+                    family: "'Secular One', 'sans-serif'",
                     size: 20
                 }
             }
@@ -130,6 +131,7 @@ const grafica2 = new Chart($grafica2, {
                 text: 'Comparativa Ingresos vs Egresos',
                 color: "#009d63",
                 font: {
+                    family: "'Secular One', 'sans-serif'",
                     size: 20
                 }
             }
@@ -174,6 +176,7 @@ const grafica3 = new Chart($grafica3, {
                 text: 'Tipos de Ingresos',
                 color: "#009d63",
                 font: {
+                    family: "'Secular One', 'sans-serif'",
                     size: 20
                 }
             }
@@ -219,6 +222,7 @@ const grafica4 = new Chart($grafica4, {
                 text: 'Tipos de Egresos',
                 color: "#009d63",
                 font: {
+                    family: "'Secular One', 'sans-serif'",
                     size: 20,
                 },
             }
