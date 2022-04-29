@@ -392,26 +392,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- modal eliminar item -->
-    <div class="modal fade" id="eliminarItem" tabindex="-1" aria-labelledby="eliminarItemLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title" id="eliminarItemLabel">Eliminar Item</h5>
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estas seguro que deseas eliminar este item?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="btn-DeleteItem" data-bs-dismiss="modal">Eliminar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!--scripts bootstrap--> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
@@ -424,6 +404,9 @@
             el.classList.toggle("toggled");
         };
     </script>
+        
+    <!--Sweet Alert-->   
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!--scripts-->
     <script src="JS/Item.js"></script>
