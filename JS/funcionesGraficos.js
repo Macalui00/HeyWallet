@@ -13,20 +13,58 @@ function existeLibroAnio(anio){
     //No existe el libro diario para ese anio
     return false;
 }
+// funcion para ordenar los meses del libro diario de un año particular
+function ordernarMeses(meses){
+    const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    const mesesOrdenados = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    
+    mesesAnio.forEach((mes) =>{
+        
+         if (meses.indexOf(mes) === -1){
+             mesesOrdenados.splice(mesesOrdenados.indexOf(mes),1);
+         }
+         
+     });
+ 
+     return mesesOrdenados;
+ 
+ }
+
+// Obtener el libro diario ordenado para un anio en particular
+function obtenerLibroDiarioOrdenado(libroDA, anio){
+    const libroDiarioOrd = [];
+
+    const mesesAnio = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    
+    mesesAnio.forEach((mes) =>{
+         //Calculamos el total con reduce
+        libroDA.forEach((libroDM) =>{
+            if (libroDM.anio === anio && libroDM.mes === mes){
+
+                libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
+
+                libroDiarioOrd.push(libroDM);
+            }
+        });
+
+    });
+   
+    return libroDiarioOrd;
+}
 
 // Obtener los ingresos totales de un libro diario de un año particular
 function obtenerIngresosTotales(libroDA, anio){
     const montos = [];
 
+    libroDA = obtenerLibroDiarioOrdenado(libroDA, anio);
+
     //Calculamos el total con reduce
     libroDA.forEach((libroDM) =>{
-        if (libroDM.anio === anio){
-            libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
+        libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
 
-            const ingresos = (libroDM?.obtenerIngresos() || []);
+        const ingresos = (libroDM?.obtenerIngresos() || []);
 
-            montos.push(calcularTotal(obtenerMontos(ingresos)));
-        }
+        montos.push(calcularTotal(ingresos));
     });
 
     return montos;
@@ -36,15 +74,15 @@ function obtenerIngresosTotales(libroDA, anio){
 function obtenerEgresosTotales(libroDA, anio){
     const montos = [];
 
+    libroDA = obtenerLibroDiarioOrdenado(libroDA, anio);
+
     //Calculamos el total con reduce
     libroDA.forEach((libroDM) =>{
-        if (libroDM.anio === anio){
-            libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
+        libroDM = new LibroDiario(libroDM.mes, libroDM.anio, libroDM.items);
 
-            const egresos = (libroDM?.obtenerEgresos() || []);
-            
-            montos.push(calcularTotal(obtenerMontos(egresos)));
-        }
+        const egresos = (libroDM?.obtenerEgresos() || []);
+        
+        montos.push(calcularTotal(egresos));
     });
 
     return montos;
@@ -138,7 +176,7 @@ function obtenerTotalesCategIngr(libroDA, categorias, anio){
                 
                 const ingresos = (libroDM?.obtenerIngresos() || []);
 
-                total = total + calcularTotal(obtenerMontos(ingresos.filter((item)=> item.categoria === categoria)));
+                total = total + calcularTotal(ingresos.filter((item)=> item.categoria === categoria));
                
             }
             
@@ -166,7 +204,7 @@ function obtenerTotalesCategEgr(libroDA, categorias, anio){
                 
                 const egresos = (libroDM?.obtenerEgresos() || []);
 
-                total = total + calcularTotal(obtenerMontos(egresos.filter((item)=> item.categoria === categoria)));
+                total = total + calcularTotal(egresos.filter((item)=> item.categoria === categoria));
                
             }
             

@@ -246,7 +246,13 @@ btnChangeYear.onclick = () => {
 
     } else { //Si NO existe un libro diario para un año en particular
 
-        alert("No existen datos para ese año.");
+        Swal.fire({
+            title: '¡Error!',
+            text: 'No existen datos para ese año.',
+            icon: 'error',
+            confirmButtonColor: "#198754",
+            confirmButtonText: 'OK',
+        })  
 
     }
    

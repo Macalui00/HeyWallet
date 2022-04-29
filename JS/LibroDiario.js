@@ -20,8 +20,8 @@ class LibroDiario{
         const ingresos = this.obtenerIngresos();
         const egresos = this.obtenerEgresos();
 
-        const totalIng = calcularTotal(obtenerMontos(ingresos));
-        const totalEgr = calcularTotal(obtenerMontos(egresos));
+        const totalIng = calcularTotal(ingresos);
+        const totalEgr = calcularTotal(egresos);
         
         this.balance = totalIng - totalEgr;
     }

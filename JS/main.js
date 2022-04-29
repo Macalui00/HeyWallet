@@ -123,8 +123,8 @@ btnChangeDate.onclick = () => {
         }
 
         //Cambio de cabecera
-        cabecera.textContent = "Balance - " + lD?.mes || mesActualNombre + " " + lD?.anio || anioActual;
-
+        cabecera.textContent = "Balance - " + (lD?.mes || mesActualNombre)+ " " + (lD?.anio || anioActual);
+        
         //Limpio la tabla
         limpiarTabla();
 
@@ -136,7 +136,14 @@ btnChangeDate.onclick = () => {
 
     } else { //Si el mes y el año superen el mes y año actual, indigo fecha erronea.
 
-        alert("Fecha ingresada erronea.");
+        Swal.fire({
+            title: '¡Error!',
+            text: 'Fecha ingresada erronea.',
+            icon: 'error',
+            confirmButtonColor: "#198754",
+            confirmButtonText: 'OK',
+        })  
+
 
     }
     
@@ -179,7 +186,7 @@ btnAddItem.onclick = () => {
         if (continuar){
             
             //Creo el item en el listado de items
-            lD.items.push(new Item(lD.items.length+1,"INGRESO", catIngreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
+            lD.items.push(new Item(lD.items[(lD.items.length-1)].id+1,"INGRESO", catIngreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
                         
             //Limpio los campos del modal
             limpiarFormAgrItem();
@@ -197,6 +204,13 @@ btnAddItem.onclick = () => {
                 //Actualizo el Libro Diario Anual en el Local Storage
                 localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
             }
+
+            Swal.fire({
+                title: '¡Agregado!',
+                icon: 'success',
+                confirmButtonColor: "#198754",
+                text: 'El item ha sido agregado exitosamente.'
+            })
 
         }
         
@@ -225,6 +239,13 @@ btnAddItem.onclick = () => {
                 localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
             }
 
+            Swal.fire({
+                title: '¡Agregado!',
+                icon: 'success',
+                confirmButtonColor: "#198754",
+                text: 'El item ha sido agregado exitosamente.'
+            })
+            
         }
         
     }
@@ -234,6 +255,7 @@ btnAddItem.onclick = () => {
 
 //Al cliquear en el boton "Editar Item" del modal Editar Item
 btnEditItem.onclick = () => {
+       
     //Seteo el continuar para limpiar valores previos
     continuar = true;
 
@@ -241,60 +263,149 @@ btnEditItem.onclick = () => {
     validarFormEditItem();
 
     //Si hubieron errores en la validación, no avanzo con la modificacion
-    if (continuar){
-        //Obtengo la linea de la tabla en cuestion
-        let lineaTabla = document.getElementById("item" + id); 
-        let celdas = lineaTabla.getElementsByTagName('td');
+    if (continuar){    
         
-        //Edito los campos del item en la tabla
-        celdas[1].textContent = (tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value);
-        celdas[2].textContent = nombreEdit.value; 
-        celdas[3].textContent = parseFloat(montoEdit.value.replaceAll(",", ".")).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-        
-        const item = new Item (lD.items[id-1].id, lD.items[id-1].tipo, lD.items[id-1].categoria, lD.items[id-1].nombre, lD.items[id-1].monto);
-        
-        //Edito los campos del item en el listado de items
-        item.setCategoria((tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value));
-        item.setNombre(nombreEdit.value);
-        item.setMonto(parseFloat(montoEdit.value.replaceAll(",", ".")));
+        Swal.fire({
+            title: '¿Está seguro que desea editar el item?',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonColor: "#dc3545",
+            confirmButtonColor: "#198754",
+            confirmButtonText: 'Sí, seguro',
+            cancelButtonText: 'No, no quiero'
+        }).then((result) => {
 
-        lD.items[id-1] = item;
-        
-        //Calculo nuevamente los totales
-        calcularTotales();
+            if (result.isConfirmed) {
 
-        if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
-            //Actualizo el libro diario actual
-            libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+                //Obtengo la linea de la tabla en cuestion
+                let lineaTabla = document.getElementById("item" + id); 
+                let celdas = lineaTabla.getElementsByTagName('td');
+                
+                //Edito los campos del item en la tabla
+                celdas[1].textContent = (tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value);
+                celdas[2].textContent = nombreEdit.value; 
+                celdas[3].textContent = parseFloat(montoEdit.value.replaceAll(",", ".")).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+                
+                const item = new Item (lD.items[id-1].id, lD.items[id-1].tipo, lD.items[id-1].categoria, lD.items[id-1].nombre, lD.items[id-1].monto);
+                
+                //Edito los campos del item en el listado de items
+                item.setCategoria((tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value));
+                item.setNombre(nombreEdit.value);
+                item.setMonto(parseFloat(montoEdit.value.replaceAll(",", ".")));
 
-            //Actualizo el Libro Diario Anual en el Local Storage
-            localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
-        }    
+                lD.items[id-1] = item;
+                
+                //Calculo nuevamente los totales
+                calcularTotales();
+
+                if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+                    //Actualizo el libro diario actual
+                    libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+                    //Actualizo el Libro Diario Anual en el Local Storage
+                    localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+                }
+                    
+                Swal.fire({
+                    title: '¡Editado!',
+                    icon: 'success',
+                    confirmButtonColor: "#198754",
+                    text: 'El item ha sido modificado exitosamente.'
+                })
+            }
+        })
+
     }
     
 
 }
 
-//Al cliquear en el boton "Eliminar Item" del modal Eliminar Item
-btnDeleteItem.onclick = () => {
-
-    //Selecciono la linea de la tabla del item en cuestión y la elimino
-    let lineaTabla = document.getElementById("item"+id);
-    lineaTabla.remove();
-
-    //Elimino el item en cuestion del listado de items
-    lD.items.splice(id-1,1);
+// //Al cliquear en el boton "Eliminar Item" del modal Eliminar Item
+// btnDeleteItem.onclick = () => {
+//     Swal.fire({
+//         title: '¿Está seguro que desea eliminar el item?',
+//         icon: 'warning',
+//         showCancelButton: true,
+//         cancelButtonColor: "#dc3545",
+//         confirmButtonColor: "#198754",
+//         confirmButtonText: 'Sí, seguro',
+//         cancelButtonText: 'No, no quiero'
+//     }).then((result) => {
         
-    //Calculo nuevamente los totales
-    calcularTotales();
+//         if (result.isConfirmed) {
+//             //Selecciono la linea de la tabla del item en cuestión y la elimino
+//             let lineaTabla = document.getElementById("item"+id);
+//             lineaTabla.remove();
 
-    if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
-        //Actualizo el libro diario actual
-        libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+//             //Elimino el item en cuestion del listado de items
+//             lD.items.splice(id-1,1);
+                
+//             //Calculo nuevamente los totales
+//             calcularTotales();
 
-        //Actualizo el Libro Diario Anual en el Local Storage
-        localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
-    }
+//             if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+//                 //Actualizo el libro diario actual
+//                 libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+//                 //Actualizo el Libro Diario Anual en el Local Storage
+//                 localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+//             }
+
+//             Swal.fire({
+//                 title: '¡Eliminado!',
+//                 icon: 'success',
+//                 text: 'El item ha sido eliminado exitosamente.'
+//             })
+//         }
+//     })
+    
+
+// }
+
+//Al cliquear en el boton "Eliminar Item" del modal Eliminar Item
+function deleteItem(){
+    Swal.fire({
+        title: '¿Está seguro que desea eliminar el item?',
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonColor: "#dc3545",
+        confirmButtonColor: "#198754",
+        confirmButtonText: 'Sí, seguro',
+        cancelButtonText: 'No, no quiero'
+    }).then((result) => {
+        
+        if (result.isConfirmed) {
+            //Selecciono la linea de la tabla del item en cuestión y la elimino
+            let lineaTabla = document.getElementById("item"+id);
+            
+            lineaTabla.remove();
+
+            //Elimino el item en cuestion del listado de items
+            lD.items.splice(id-1,1);
+            
+            //Actualizar los ids
+            actualizarItems();
+                
+            //Calculo nuevamente los totales
+            calcularTotales();
+
+            if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
+                //Actualizo el libro diario actual
+                libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
+
+                //Actualizo el Libro Diario Anual en el Local Storage
+                localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
+            }
+
+            Swal.fire({
+                title: '¡Eliminado!',
+                icon: 'success',
+                confirmButtonColor: "#198754",
+                text: 'El item ha sido eliminado exitosamente.'
+            })
+        }
+    })
+    
 
 }
 
@@ -312,7 +423,14 @@ function buscarItems(e){
     //Si el campo de nombre está vacío retorno mensaje de error
     if(nombreABuscar.length === 0){
 
-        alert("No se ingresó nombre por el cual buscar.");
+        Swal.fire({
+            title: '¡Error!',
+            text: 'No se ingresó nombre por el cual buscar.',
+            icon: 'error',
+            confirmButtonColor: "#198754",
+            confirmButtonText: 'OK',
+        })  
+
 
     } else{ //Caso contrario, filtro
 
@@ -323,7 +441,13 @@ function buscarItems(e){
     //En caso de que no se hayan obtenido resultados
     if (itemsFiltrados.length === 0){
 
-        alert("No se han encontrado items con el nombre / descripción ingresada.");  
+        Swal.fire({
+            title: 'No hay resultados',
+            text: 'No se han encontrado items con el nombre ingresado.',
+            icon: 'info',
+            confirmButtonColor: "#198754",
+            confirmButtonText: 'OK',
+        })  
 
     } else { //Mostramos el array final filtrado en la tabla
 

@@ -11,9 +11,15 @@ function obtenerMontos(items){
 }
 
 //Calculo el total del listado items
-function calcularTotal(montos){
-    let total = montos.reduce((acc, monto) => acc + parseInt(monto), 0);
-    return isNaN(total) ? 0 : total;
+function calcularTotal(items){
+    let total = 0;
+    // let total = montos.reduce((acc, monto) => acc + parseInt(monto), 0);
+    // return isNaN(total) ? 0 : total;
+    //Calculamos el total con reduce
+    items.forEach((item) =>{
+        total = total + item.monto;
+    });
+    return total;
 }
 
 //Verifico si existe el libro diario para ese mes y anio
@@ -216,7 +222,7 @@ function agregarItemATabla(){
                             <td>${nombre}</td>
                             <td>${montoConvertido}</td>
                             <td><i class="material-icons icono iconEdit text-success" style="" data-bs-toggle="modal" onclick="cargarItemEdit(this)" data-bs-target="#editarItem">edit</i>
-                            <i class="material-icons icono text-danger" style="" data-bs-toggle="modal" onclick="cargarItemElim(this)" data-bs-target="#eliminarItem">delete</i></td>`;
+                            <i class="material-icons icono text-danger" id="btn-DeleteItem" style="" onclick="cargarItemElim(this);deleteItem();">delete</i></td>`;
 
     //Obtengo el cuerpo de la tabla
     let cuerpoTabla = document.querySelector(".bodyTable");
@@ -236,10 +242,10 @@ function calcularTotales(){
     const egresos = (lD?.obtenerEgresos() || []);
     
     //Calculo y muestro el total de ingresos
-    totalIng.innerText = calcularTotal(obtenerMontos(ingresos)).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+    totalIng.innerText = calcularTotal(ingresos).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
 
     //Calculo y muestro el total de egresos
-    totalEgr.innerText = calcularTotal(obtenerMontos(egresos)).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+    totalEgr.innerText = calcularTotal(egresos).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
 
     lD.calcularBalance();
 
@@ -324,13 +330,27 @@ function validarFormEditItem(){
     //Valido si el item es de tipo ingreso, la categoria no haya quedado vacía
     if (tipoItem.toUpperCase() === "INGRESO" && catIngresoEdit.value.length === 0) {
 
-        alert("¡Falta ingresar categoria ingreso!");
+        Swal.fire({
+            title: '¡Error!',
+            text: '¡Falta ingresar categoria ingreso!',
+            icon: 'error',
+            confirmButtonColor: "#198754",
+            confirmButtonText: 'OK',
+        });  
+
         continuar = false;
 
     //Valido si el item es de tipo egreso, la categoria no haya quedado vacía
     } else if (tipoItem.toUpperCase() === "EGRESO" && catEgresoEdit.value.length === 0) {
+        
+        Swal.fire({
+            title: '¡Error!',
+            text: '¡Falta ingresar categoria egreso!',
+            icon: 'error',
+            confirmButtonColor: "#198754",
+            confirmButtonText: 'OK',
+        }); 
 
-        alert("¡Falta ingresar categoria egreso!");
         continuar = false;
 
     } else {
@@ -338,13 +358,27 @@ function validarFormEditItem(){
         //Valido que el nombre no haya quedado vacío
         if (nombreEdit.value.length === 0){
 
-            alert("¡Falta ingresar nombre!");
+            Swal.fire({
+                title: '¡Error!',
+                text: '¡Falta ingresar nombre!',
+                icon: 'error',
+                confirmButtonColor: "#198754",
+                confirmButtonText: 'OK',
+            });
+
             continuar = false;
 
         //Valido que no haya un item con (categoria, nombre) iguales
         } else if(existeItem(id,((tipoItem.toUpperCase() === "INGRESO") ? (catIngresoEdit.value) : (catEgresoEdit.value)), nombreEdit.value)) {
 
-            alert("¡No se puede ingresar más de un item con la misma categoria y nombre!");
+            Swal.fire({
+                title: '¡Error!',
+                text: '¡No se puede ingresar más de un item con la misma categoria y nombre!',
+                icon: 'error',
+                confirmButtonColor: "#198754",
+                confirmButtonText: 'OK',
+            });  
+
             continuar = false;
 
         } else {
@@ -353,12 +387,28 @@ function validarFormEditItem(){
             if (isNaN(parseFloat(montoEdit.value))){
 
                 alert("¡UPS! Monto Erroneo.");
+
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'Ha ingresado monto erroneo.',
+                    icon: 'error',
+                    confirmButtonColor: "#198754",
+                    confirmButtonText: 'OK',
+                });  
+    
                 continuar = false;
                 
             //Valido que el monto no sea negativo
             } else if (parseFloat(montoEdit.value) < 0) {
 
-                alert("¡El monto debe ser mayor a cero!");
+                Swal.fire({
+                    title: '¡Error!',
+                    text: '¡El monto debe ser mayor a cero!',
+                    icon: 'error',
+                    confirmButtonColor: "#198754",
+                    confirmButtonText: 'OK',
+                });  
+
                 continuar = false;
 
             //Pasó las validaciones
@@ -388,10 +438,10 @@ function cargarItemElim(nodo){
     
     //Obtengo el id del item en función de su categoria y nombre
     id = buscarIdItem(categoria, nombre); 
-
+    
 }
 
-
+//Limpiar la tabla
 function limpiarTabla(){
 
     let cuerpoTabla = document.querySelector(".bodyTable");
@@ -403,16 +453,26 @@ function limpiarTabla(){
     }
 }
 
-function cargarTabla(items){
-    
-    for (const item of items) {
+//Actualizar los id de los items, una vez eliminado un item.
+function actualizarItems(){
 
+    for(let i=0; i < lD.items.length; i++){
+        if (lD.items[i].id !== (i+1)){
+            lD.items[i].id = i+1;
+        }
+    }
+
+}
+
+//Cargar la tabla con todos los items del mes y anio actual
+function cargarTabla(items){
+    for (const item of items) {
+        
         //Creo una nueva linea en la tabla
         let lineaTabla = document.createElement("tr");
 
         //Desestructuro el item + uso de alias
         let {id: itemId, tipo, categoria, nombre, monto} = item;
-
         //Le asigno un id para identificar al item
         lineaTabla.id = "item" + itemId;
     
@@ -426,7 +486,7 @@ function cargarTabla(items){
                                 <td>${nombre}</td>
                                 <td>${montoConvertido}</td>
                                 <td><i class="material-icons icono iconEdit text-success" style="" data-bs-toggle="modal" onclick="cargarItemEdit(this)" data-bs-target="#editarItem">edit</i>
-                                <i class="material-icons icono text-danger" style="" data-bs-toggle="modal" onclick="cargarItemElim(this)" data-bs-target="#eliminarItem">delete</i></td>`;
+                                <i class="material-icons icono text-danger" id="btn-DeleteItem" style="" onclick="cargarItemElim(this);deleteItem();">delete</i></td>`;
         
         //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
         let cuerpoTabla = document.querySelector(".bodyTable");
