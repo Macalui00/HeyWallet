@@ -135,13 +135,27 @@ function validarFormAgrItem(){
         //Valido que el nombre no haya quedado vacío
         if (nombre.value.length === 0){
 
-            alert("¡Falta ingresar nombre!");
+            Swal.fire({
+                title: '¡Error!',
+                text: '¡Falta ingresar nombre!',
+                icon: 'error',
+                confirmButtonColor: "#198754",
+                confirmButtonText: 'OK',
+            });
+
             continuar = false;
 
         //Valido que no haya un item con (categoria, nombre) iguales
         } else if(existeItem(id,((tipoIngreso.checked) ? (catIngreso.value) : (catEgreso.value)), nombre.value)) {
 
-            alert("¡No se puede ingresar más de un item con la misma categoria y nombre!");
+            Swal.fire({
+                title: '¡Error!',
+                text: '¡No se puede ingresar más de un item con la misma categoria y nombre!',
+                icon: 'error',
+                confirmButtonColor: "#198754",
+                confirmButtonText: 'OK',
+            });
+
             continuar = false;
 
         } else {
@@ -149,13 +163,27 @@ function validarFormAgrItem(){
             //Valido que el monto no haya quedado vacío
             if (isNaN(parseFloat(monto.value))){
 
-                alert("¡UPS! Monto Erroneo.");
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'Ha ingresado monto erroneo.',
+                    icon: 'error',
+                    confirmButtonColor: "#198754",
+                    confirmButtonText: 'OK',
+                });
+
                 continuar = false;
                
             //Valido que el monto no sea negativo
             } else if (parseFloat(monto.value) < 0) {
 
-                alert("¡El monto debe ser mayor a cero!");
+                Swal.fire({
+                    title: '¡Error!',
+                    text: '¡El monto debe ser mayor a cero!',
+                    icon: 'error',
+                    confirmButtonColor: "#198754",
+                    confirmButtonText: 'OK',
+                });
+                
                 continuar = false;
 
             //Pasó las validaciones

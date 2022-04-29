@@ -2,9 +2,11 @@
 const libroDiarioAnual = (localStorage.getItem('libroDiarioAnual') === null ) ? [] : JSON.parse(localStorage.getItem('libroDiarioAnual'));
 
 //Obtengo la fecha actual
-const date = new Date();
-let mesActualNombre = date.toLocaleString("es-AR", { month: "long" });
-let anioActual = date.getFullYear();
+const DateTime = luxon.DateTime
+const date = DateTime.now();
+
+let mesActualNombre = date.toLocaleString({ month: "long" });
+let anioActual = date.year;
 
 //Definimos ingresos, egresos y el balance
 let lD = obtenerLibroDiarioAct(mesActualNombre, anioActual);
@@ -91,9 +93,9 @@ btnChangeDate.onclick = () => {
     
     //Mes ingresado en formato nombre (enero, febrero, marzo, etc.)
     let mesIngrNombre = selecMes.value.toLocaleString("es-AR", { month: "long" });
-
+    
     //Chequeo que el mes y el año no superen el mes y año actual, solo se admiten mes y año previos
-    if ( ((mesIngrNumero <= date.getMonth()) && (anioIngresado === date.getFullYear())) || (parseInt(selecAnio.value) < date.getFullYear()) ) {
+    if ( ((mesIngrNumero <= date.month) && (anioIngresado === date.year)) || (parseInt(selecAnio.value) < date.year) ) {
 
         //Si ya existe un libro diario para un mes y año en particular
         if (existeLD(mesIngrNombre, anioIngresado)){
@@ -245,7 +247,7 @@ btnAddItem.onclick = () => {
                 confirmButtonColor: "#198754",
                 text: 'El item ha sido agregado exitosamente.'
             })
-            
+
         }
         
     }
@@ -319,48 +321,6 @@ btnEditItem.onclick = () => {
     
 
 }
-
-// //Al cliquear en el boton "Eliminar Item" del modal Eliminar Item
-// btnDeleteItem.onclick = () => {
-//     Swal.fire({
-//         title: '¿Está seguro que desea eliminar el item?',
-//         icon: 'warning',
-//         showCancelButton: true,
-//         cancelButtonColor: "#dc3545",
-//         confirmButtonColor: "#198754",
-//         confirmButtonText: 'Sí, seguro',
-//         cancelButtonText: 'No, no quiero'
-//     }).then((result) => {
-        
-//         if (result.isConfirmed) {
-//             //Selecciono la linea de la tabla del item en cuestión y la elimino
-//             let lineaTabla = document.getElementById("item"+id);
-//             lineaTabla.remove();
-
-//             //Elimino el item en cuestion del listado de items
-//             lD.items.splice(id-1,1);
-                
-//             //Calculo nuevamente los totales
-//             calcularTotales();
-
-//             if(obtenerIDLibroDiario(mesActualNombre, anioActual) !== -1){
-//                 //Actualizo el libro diario actual
-//                 libroDiarioAnual[obtenerIDLibroDiario(mesActualNombre, anioActual)] = lD;
-
-//                 //Actualizo el Libro Diario Anual en el Local Storage
-//                 localStorage.setItem('libroDiarioAnual', JSON.stringify(libroDiarioAnual));
-//             }
-
-//             Swal.fire({
-//                 title: '¡Eliminado!',
-//                 icon: 'success',
-//                 text: 'El item ha sido eliminado exitosamente.'
-//             })
-//         }
-//     })
-    
-
-// }
 
 //Al cliquear en el boton "Eliminar Item" del modal Eliminar Item
 function deleteItem(){

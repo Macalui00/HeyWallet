@@ -2,12 +2,14 @@
 const libroDiarioAnual = (localStorage.getItem('libroDiarioAnual') === null ) ? [] : JSON.parse(localStorage.getItem('libroDiarioAnual'));
 
 //Obtengo la fecha actual
-const date = new Date();
-let mesActualNombre = date.toLocaleString("es-AR", { month: "long" });
-let anioActual = date.getFullYear();
+const DateTime = luxon.DateTime
+const date = DateTime.now();
+
+let mesActualNombre = date.toLocaleString({ month: "long" });
+let anioActual = date.year;
 
 //Definimos ingresos, egresos y el balance
-let lD = obtenerLibroDiarioAct(mesActualNombre, anioActual);
+const lD = obtenerLibroDiarioAct(mesActualNombre, anioActual);
 
 //Elementos del cambio de anio
 let btnYear = document.getElementById("btn-Year");
@@ -25,14 +27,14 @@ cabeceraGraficas.textContent = `Gráficos - ${anioActual}`;
 const $grafica = document.querySelector("#grafica");
 
 // Las etiquetas son las que van en el eje X. 
-let etiquetasGraf1 = obtenerMeses(libroDiarioAnual, anioActual);
+const etiquetasGraf1 = obtenerMeses(libroDiarioAnual, anioActual);
 
 // Los datos del grafico 
-let ingresosGraf1 = obtenerIngresosTotales(libroDiarioAnual, anioActual);
-let egresosGraf1 = obtenerEgresosTotales(libroDiarioAnual, anioActual);
+const ingresosGraf1 = obtenerIngresosTotales(libroDiarioAnual, anioActual);
+const egresosGraf1 = obtenerEgresosTotales(libroDiarioAnual, anioActual);
 
 // Podemos tener varios conjuntos de datos. Comencemos con uno
-let datosIngrGraf3Graf1 = {
+const datosIngrGraf3Graf1 = {
     label: "Ingresos",
     data: ingresosGraf1, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
     backgroundColor: 'rgba(42, 167, 53, 0.97)', // Color de fondo
@@ -40,7 +42,7 @@ let datosIngrGraf3Graf1 = {
     borderWidth: 1,// Ancho del borde
 };
 
-let datosEgrGraf4Graf1 = {
+const datosEgrGraf4Graf1 = {
     label: "Egresos",
     data: egresosGraf1, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
     backgroundColor: 'rgba(235, 54, 54, 0.97)', // Color de fondo
@@ -48,7 +50,7 @@ let datosEgrGraf4Graf1 = {
     borderWidth: 1,// Ancho del borde
 };     
 
-let grafica1 = new Chart($grafica, {
+const grafica1 = new Chart($grafica, {
     type: 'line',// Tipo de gráfica
     data: {
         labels: etiquetasGraf1,
@@ -84,11 +86,11 @@ let grafica1 = new Chart($grafica, {
 const $grafica2 = document.querySelector("#grafica2");
 
 //Data ingresos y egresos
-let ingresosGraf2 = obtenerIngresosTotales(libroDiarioAnual, anioActual);
-let egresosGraf2 = obtenerEgresosTotales(libroDiarioAnual, anioActual);
+const ingresosGraf2 = obtenerIngresosTotales(libroDiarioAnual, anioActual);
+const egresosGraf2 = obtenerEgresosTotales(libroDiarioAnual, anioActual);
 
 // Podemos tener varios conjuntos de datos
-let datosIng2022 = {
+const datosIng2022 = {
     label: "Ingresos - 2022",
     data: ingresosGraf2, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
     backgroundColor: 'rgba(42, 167, 53, 0.97)', // Color de fondo
@@ -96,7 +98,7 @@ let datosIng2022 = {
     borderWidth: 1,// Ancho del borde
 };
 
-let datosEgr2022 = {
+const datosEgr2022 = {
     label: "Egresos - 2022",
     data: egresosGraf2, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
     backgroundColor: 'rgba(235, 54, 54, 0.97)',// Color de fondo
@@ -140,14 +142,14 @@ const grafica2 = new Chart($grafica2, {
 const $grafica3 = document.querySelector("#grafica3");
 
 // Las etiquetas son las porciones de la gráfica
-let etiquetasGraf3 = obtenerCategoriasIngresos(libroDiarioAnual, anioActual);
+const etiquetasGraf3 = obtenerCategoriasIngresos(libroDiarioAnual, anioActual);
 
 // Los datos del grafico 
-let coloresGraf3 = obtenerListadoColores(etiquetasGraf3);
-let ingresosGraf3 = obtenerTotalesCategIngr(libroDiarioAnual, etiquetasGraf3, anioActual);
+const coloresGraf3 = obtenerListadoColores(etiquetasGraf3);
+const ingresosGraf3 = obtenerTotalesCategIngr(libroDiarioAnual, etiquetasGraf3, anioActual);
 
 // Podemos tener varios conjuntos de datos. Comencemos con uno
-let datosIngrGraf3 = {
+const datosIngrGraf3 = {
     data: ingresosGraf3, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
     // Ahora debería haber tantos background colors como datos, es decir, para este ejemplo, 4
     backgroundColor: coloresGraf3,// Color de fondo
@@ -184,16 +186,16 @@ const grafica3 = new Chart($grafica3, {
 const $grafica4 = document.querySelector("#grafica4");
 
 // Las etiquetas son las porciones de la gráfica
-let etiquetasGraf4 = obtenerCategoriasEgresos(libroDiarioAnual, anioActual);
+const etiquetasGraf4 = obtenerCategoriasEgresos(libroDiarioAnual, anioActual);
 
 // Colores del grafico
-let coloresGraf4 = obtenerListadoColores(etiquetasGraf4);
+const coloresGraf4 = obtenerListadoColores(etiquetasGraf4);
 
 // Los datos del grafico 
-let egresosGraf4 = obtenerTotalesCategEgr(libroDiarioAnual, etiquetasGraf4, anioActual);
+const egresosGraf4 = obtenerTotalesCategEgr(libroDiarioAnual, etiquetasGraf4, anioActual);
 
 // Podemos tener varios conjuntos de datos. Comencemos con uno
-let datosEgrGraf4= {
+const datosEgrGraf4= {
     data: egresosGraf4, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
     // Ahora debería haber tantos background colors como datos, es decir, para este ejemplo, 4
     backgroundColor: coloresGraf4,// Color de fondo
