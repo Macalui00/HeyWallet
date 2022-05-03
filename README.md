@@ -1,10 +1,7 @@
 # ¡HEY WALLET!
 
-Proyecto Final del curso de JavaScript de CoderHouse - Consiste en un proyecto de Gestión de Ingresos y Egresos.
-
-## Acerca del proyecto
-
-El proyecto consiste en un gestor de ingresos y egresos, con los cuales calcula el balance y se pueden realizar ciertos análisis de los resultados obtenidos.
+Proyecto Final del curso de JavaScript de CoderHouse.
+Este proyecto consiste en un gestor de ingresos y egresos, con los cuales calcula el balance y se pueden realizar ciertos análisis de los resultados obtenidos.
 Pensado para poder gestionar la salud financiera personal.
 
 ## ACERCA DEL PROYECTO
