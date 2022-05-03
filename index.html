@@ -141,6 +141,9 @@
                                                     data-bs-target="#agregarItem" id="btn-modalAddItem">
                                                     Agregar Item
                                                 </button>
+                                                <button type="button" id="btnExportarDetalle" class="btn btn-success ms-3" onclick="">
+                                                    Exportar a Excel
+                                                </button>                                                
                                             </div>
                                         </div>
                                         <div class="row">
@@ -154,7 +157,7 @@
                                         <div class="card mt-0 shadow-sm">
                                             <div class="card-body py-0 px-2">
                                               <div class="table-responsive">
-                                                <table class="table table-responsive zero-configuration mt-3 rounded text-center normal-color">
+                                                <table id="tablaDetalle" class="table table-responsive zero-configuration mt-3 rounded text-center normal-color">
                                                         <thead class="m-auto">
                                                             <tr>
                                                                 <th>Tipo</th>
@@ -408,11 +411,17 @@
 
     <!--scripts jquery--> 
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> 
+        
+    <!-- EXPORT FILES -->
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="JS/ExportFiles/FileSaver.min.js"></script>
+    <script src="JS/ExportFiles/Blob.min.js"></script>
+    <script src="JS/ExportFiles/TableExport.min.js"></script>    
     
     <!--scripts-->
     <script src="JS/config.js"></script>
-    <script src="JS/Item.js"></script>
-    <script src="JS/LibroDiario.js"></script>
+    <script src="JS/Objetos/Item.js"></script>
+    <script src="JS/Objetos/LibroDiario.js"></script>
     <script src="JS/funcionesGenerales.js"></script>
     <script src="JS/main.js"></script>
 

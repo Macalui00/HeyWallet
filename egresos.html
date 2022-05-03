@@ -83,7 +83,7 @@
             </nav>
 
             <div class="container-fluid px-4">
-                <div class="row g-3 my-2">
+                <div class="row g-3 my-0 mb-2">
                     <!-- <h3 class="fs-4 mb-3">Recent Orders</h3> -->
                     <div class="col">
                         <section class="Grilla">
@@ -95,7 +95,9 @@
                                                 <h4 class="title-text font-text pb-0 mb-0">Detalle Egresos</h4>
                                             </div>
                                             <div class="col d-flex justify-content-end">
-                                                <button type="button" class="btn btn-success" onclick="">Exportar</button>
+                                                <button type="button" id="btnExportar3" class="btn btn-success" onclick="">
+                                                    Exportar a Excel
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -109,7 +111,7 @@
                                         <div class="card mt-3 shadow-sm">
                                             <div class="card-body py-0 px-2">
                                               <div class="table-responsive">
-                                                <table class="table table-responsive zero-configuration mt-3 rounded text-center normal-color">
+                                                <table id="tablaEgresos" class="table table-responsive zero-configuration mt-3 rounded text-center normal-color">
                                                         <thead class="m-auto">
                                                             <tr>
                                                                 <th>Categoria</th>
@@ -129,7 +131,9 @@
                                                 <h4 class="title-text font-text pb-0 mb-0">Totales por Categoria</h4>
                                             </div>
                                             <div class="col d-flex justify-content-end">
-                                                <button type="button" class="btn btn-success" onclick="">Exportar</button>
+                                                <button type="button" id="btnExportar4" class="btn btn-success" onclick="">
+                                                    Exportar a Excel
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -138,10 +142,11 @@
                                         <div class="card mt-1 shadow-sm">
                                             <div class="card-body py-0 px-2">
                                               <div class="table-responsive">
-                                                <table class="table table-responsive zero-configuration mt-3 rounded text-center normal-color">
+                                                <table id="tablaCategEgresos" class="table table-responsive zero-configuration mt-3 rounded text-center normal-color">
                                                         <thead class="m-auto">
                                                             <tr>
                                                                 <th>Categoria</th>
+                                                                <th>Cantidad</th>
                                                                 <th>Monto Total</th>
                                                             </tr>
                                                         </thead>
@@ -222,13 +227,19 @@
 
     <!--scripts jquery--> 
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> 
+        
+    <!-- EXPORT FILES -->
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="JS/ExportFiles/FileSaver.min.js"></script>
+    <script src="JS/ExportFiles/Blob.min.js"></script>
+    <script src="JS/ExportFiles/TableExport.min.js"></script>    
     
     <!--scripts-->
     <script src="JS/config.js"></script>
-    <script src="JS/Item.js"></script>
-    <script src="JS/LibroDiario.js"></script>
-    <script src="JS/funcionesEgresos.js"></script>
-    <script src="JS/egresos.js"></script>
+    <script src="JS/Objetos/Item.js"></script>
+    <script src="JS/Objetos/LibroDiario.js"></script>
+    <script src="JS/Egresos/funcionesEgresos.js"></script>
+    <script src="JS/Egresos/egresos.js"></script>
 
 </body>
 

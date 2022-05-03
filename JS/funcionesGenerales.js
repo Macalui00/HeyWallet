@@ -501,7 +501,7 @@ function cargarTabla(items){
 
         //Desestructuro el item + uso de alias
         let {id: itemId, tipo, categoria, nombre, monto} = item;
-        console.log(monto);
+        
         //Le asigno un id para identificar al item
         lineaTabla.id = "item" + itemId;
     
@@ -523,4 +523,28 @@ function cargarTabla(items){
     
     }
 
+}
+
+
+//Reemplazar campos de ingreso y egreso en el XLSX
+function replaceCampo(listado){
+
+    //Por cada linea de la tabla
+    listado.forEach(linea => {
+
+        //mirar la primera columna que es la de tipo de item y reemplazar
+        if (linea[0].v === 'north_east'){
+
+            linea[0].v = 'Ingreso'
+
+        } else if (linea[0].v === 'south_west'){
+
+            linea[0].v = 'Egreso'
+
+        }
+
+    });
+
+    //retorna el listado final
+    return listado;
 }

@@ -63,6 +63,10 @@ let btnChangeDate = document.getElementById("btn-ChangeDate");
 let selecAnio = document.getElementById("selecAnio");
 let selecMes = document.getElementById("selecMes");
 
+//EXPORT TABLES
+const btnExportarDetalle = document.querySelector("#btnExportarDetalle"),
+tablaIngresos = document.querySelector("#tablaDetalle");
+
 //Utilizados en la edición y eliminación de un item
 let id, tipoItem;
 
@@ -429,3 +433,21 @@ btnClean.onclick = () => {
     //Limpio el campo de Filtrado por Nombre
     nombreABuscar.value = "";
 }
+
+//AL CLIQUEAR EXPORTAR TABLA DE CATEGORIAS INGRESOS
+btnExportarDetalle.addEventListener("click", function() {
+
+    let tableExport = new TableExport(tablaDetalle, {
+        exportButtons: false, // No queremos botones
+        filename: `Detalle_Ingresos_Egresos - ${mesActualNombre}-${anioActual}`, //Nombre del archivo de Excel
+        sheetname: `Detalle_Ingresos_Egresos`, //Título de la hoja
+        ignoreCols: 4, // Omitir el campo de acciones
+    });
+
+    let datos = tableExport.getExportData(); //Obtengo los datos exportables
+    datos.tablaDetalle.xlsx.data = replaceCampo(datos.tablaDetalle.xlsx.data); //Cambio el como se mostrará el tipo de item en el excel
+
+    let preferenciasDocumento = datos.tablaDetalle.xlsx;
+    tableExport.export2file(preferenciasDocumento.data, preferenciasDocumento.mimeType, preferenciasDocumento.filename, preferenciasDocumento.fileExtension, preferenciasDocumento.merges, preferenciasDocumento.RTL, preferenciasDocumento.sheetname);
+
+});
