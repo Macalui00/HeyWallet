@@ -25,11 +25,10 @@ Se agregaron Exports A Excel para que se pueda exportar la información a excel 
 
 ## LIBRERIAS
 
-Se inclueron las librerias de (Sweet Alert)[https://sweetalert2.github.io/] y (Luxon)[https://moment.github.io/luxon/#/].
+Se inclueron las librerias de [Sweet Alert](https://sweetalert2.github.io/) y [Luxon](https://moment.github.io/luxon/#/).
 
 ## ACERCA DE LOS EXPORT
 
-Para los export segui las indicaciones de (este blog)[https://parzibyte.me/blog/2019/12/04/exportar-tabla-html-excel-javascript/] y la documentación correspondiente de TableExport:
-
-- (Github)[https://github.com/clarketm/TableExport/]
-- (Página de TableExport)[https://tableexport.travismclarke.com/]
+Para los export segui las indicaciones de [este blog](https://parzibyte.me/blog/2019/12/04/exportar-tabla-html-excel-javascript/) y la documentación correspondiente de TableExport:
+- [Github](https://github.com/clarketm/TableExport/)
+- [Página de TableExport](https://tableexport.travismclarke.com/)
