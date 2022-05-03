@@ -188,7 +188,7 @@ btnAddItem.onclick = () => {
         if (continuar){
             
             //Creo el item en el listado de items
-            lD.items.push(new Item(lD.items[(lD?.items[(lD?.items?.length-1 || 0)]?.id+1|| 0),"INGRESO", catIngreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
+            lD.items.push(new Item((lD?.items[(lD?.items?.length-1 || 0)]?.id+1|| 0),"INGRESO", catIngreso.value, nombre.value, date.toLocaleString(DateTime.DATETIME_SHORT), parseFloat(monto.value.replaceAll(",","."))));
                         
             //Limpio los campos del modal
             limpiarFormAgrItem();
@@ -222,7 +222,7 @@ btnAddItem.onclick = () => {
         if (continuar){
              
             //Creo el item en el listado de items
-            lD.items.push(new Item(lD.items.length+1,"EGRESO", catEgreso.value, nombre.value, parseFloat(monto.value.replaceAll(",","."))));
+            lD.items.push(new Item(lD.items.length+1,"EGRESO", catEgreso.value, nombre.value, date.toLocaleString(DateTime.DATETIME_SHORT), parseFloat(monto.value.replaceAll(",","."))));
 
             //Limpio los campos del modal
             limpiarFormAgrItem();
@@ -288,7 +288,7 @@ btnEditItem.onclick = () => {
                 celdas[2].textContent = nombreEdit.value; 
                 celdas[3].textContent = parseFloat(montoEdit.value.replaceAll(",", ".")).toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
                 
-                const item = new Item (lD.items[id-1].id, lD.items[id-1].tipo, lD.items[id-1].categoria, lD.items[id-1].nombre, lD.items[id-1].monto);
+                const item = new Item (lD.items[id].id, lD.items[id].tipo, lD.items[id].categoria, lD.items[id].nombre, lD.items[id].fecha, lD.items[id].monto);
                 
                 //Edito los campos del item en el listado de items
                 item.setCategoria((tipoItem === "EGRESO") ? (catEgresoEdit.value) : (catIngresoEdit.value));

@@ -2,11 +2,12 @@
 class Item{
             
     //Metodo Constructor
-    constructor(id, tipo, categoria, nombre, monto){
+    constructor(id, tipo, categoria, nombre, fecha, monto){
         this.id = id;
         this.tipo = tipo;
         this.categoria = categoria;
         this.nombre = nombre;
+        this.fecha = fecha;
         this.monto = monto;
     }
 
@@ -31,6 +32,10 @@ class Item{
         return this.nombre;
     }
 
+    getFecha() {
+        return this.fecha;
+    }
+
     getMonto() {
         return this.monto;
     }
@@ -41,6 +46,10 @@ class Item{
 
     setNombre(nombre) {
         this.nombre = nombre;
+    }
+
+    setFecha(fecha) {
+        this.fecha = fecha;
     }
 
     setMonto(monto) {

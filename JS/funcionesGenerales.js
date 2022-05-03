@@ -13,12 +13,12 @@ function obtenerMontos(items){
 //Calculo el total del listado items
 function calcularTotal(items){
     let total = 0;
-    // let total = montos.reduce((acc, monto) => acc + parseInt(monto), 0);
-    // return isNaN(total) ? 0 : total;
+
     //Calculamos el total con reduce
     items.forEach((item) =>{
         total = total + item.monto;
     });
+
     return total;
 }
 
@@ -501,6 +501,7 @@ function cargarTabla(items){
 
         //Desestructuro el item + uso de alias
         let {id: itemId, tipo, categoria, nombre, monto} = item;
+        console.log(monto);
         //Le asigno un id para identificar al item
         lineaTabla.id = "item" + itemId;
     
