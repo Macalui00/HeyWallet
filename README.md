@@ -21,4 +21,4 @@ Se agregó toda la logica para la visualización de gráficos de los ingresos y 
 
 ## LIBRERIAS
 
-Se inclueron las librerias de Sweet y Luxon.
+Se inclueron las librerias de Sweet y Luxon para el manejo de alerts, confirms y fechas.
