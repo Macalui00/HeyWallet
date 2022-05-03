@@ -19,6 +19,17 @@ Finalmente en la tabla se muestra el detalle de los items ingresados por el usua
 
 Se agregó toda la logica para la visualización de gráficos de los ingresos y egresos a lo largo de un año. Se puede cambiar de año desde la tuerquita del header.
 
+Se agregó una sección exclusiva para los ingresos y egresos donde se ve el detalle de los mismos, y un detalle de las categorias ingresadas (nombre, cantidad, monto total) todo esto se ve en función de un mes y año en particular. Se puede cambiar de mes y año desde la tuerquita del header. Además se puede filtrar por categoria si de desea para solo ver el detalle de los ingresos o egresos de una categoria en particular.
+
+Se agregaron Exports A Excel para que se pueda exportar la información a excel y guardarla o manejarla fuera de ¡Hey Wallet!
+
 ## LIBRERIAS
 
-Se inclueron las librerias de Sweet y Luxon.
+Se inclueron las librerias de (Sweet Alert)[https://sweetalert2.github.io/] y (Luxon)[https://moment.github.io/luxon/#/].
+
+## ACERCA DE LOS EXPORT
+
+Para los export segui las indicaciones de (este blog)[https://parzibyte.me/blog/2019/12/04/exportar-tabla-html-excel-javascript/] y la documentación correspondiente de TableExport:
+
+- (Github)[https://github.com/clarketm/TableExport/]
+- (Página de TableExport)[https://tableexport.travismclarke.com/]
