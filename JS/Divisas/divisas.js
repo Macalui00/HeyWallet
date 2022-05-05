@@ -25,10 +25,10 @@ btnExportarDivisas.addEventListener("click", function() {
 
 });
 
-cabecera.textContent = `Divisas - ${date.day}/${date.month}/${date.year}`;
+cabecera.textContent = `Divisas - ${date.toLocaleString(DateTime.DATE_SHORT)}`;
 
 //dolar oficial
-fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/dolaroficial",)
+fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/dolaroficial")
   .then(response => response.json())
   .then(json => {
       
@@ -63,7 +63,7 @@ fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp
      );
 
 //dolar blue
-fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/dolarblue",)
+fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/dolarblue")
   .then(response => response.json())
   .then(json => {
       
