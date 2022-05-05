@@ -29,3 +29,7 @@ Se inclueron las librerias de [Sweet Alert](https://sweetalert2.github.io/) y [L
 Para los export segui las indicaciones de [este blog](https://parzibyte.me/blog/2019/12/04/exportar-tabla-html-excel-javascript/) y la documentación correspondiente de TableExport:
 - [Github](https://github.com/clarketm/TableExport/)
 - [Página de TableExport](https://tableexport.travismclarke.com/)
+
+## ACERCA DE LAS DIVISAS
+
+Para el desafio de agregado de FETCH y AJAX, decidí consumir una API que tira las divisas de dolares, euros y reales. Esta API es [API Dolar Argentina](https://github.com/Castrogiovanni20/api-dolar-argentina).
