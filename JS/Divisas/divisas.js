@@ -25,106 +25,47 @@ btnExportarDivisas.addEventListener("click", function() {
 
 });
 
+//Cabecera de Página de Divisas
 cabecera.textContent = `Divisas - ${date.toLocaleString(DateTime.DATE_SHORT)}`;
 
 //dolar oficial
 fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/dolaroficial")
-  .then(response => response.json())
-  .then(json => {
-      
-        //Creo una nueva linea en la tabla
-        let lineaTabla = document.createElement("tr");
+.then(response => response.json())
+.then(json => {
 
-        //Desestructuro el item + uso de alias
-        let {compra, fecha, venta} = json;
+    //Creo una nueva linea en la tabla
+    armarTablaDivisas(json, "itemDolarOficial", "DOLAR (USD)", "Oficial");
         
-        //Le asigno un id para identificar al item
-        lineaTabla.id = "itemDolarOficial";
-    
-        //Convierto el monto al formato deseado
-        let compraConvertido = compra.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-        let ventaConvertido = venta.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-
-        //Definimos el innerHTML del elemento con una plantilla de texto
-        lineaTabla.innerHTML = `<td>DOLAR (USD)</td>
-                                <td>Oficial</td>
-                                <td>${fecha}</td>
-                                <td>${compraConvertido}</td>
-                                <td>${ventaConvertido}</td>`;
-        
-        //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
-        let cuerpoTabla = document.querySelector(".bodyTable");
-        cuerpoTabla.appendChild(lineaTabla);
-  }
+}
     
     )
-  .catch(error =>
-    console.warn(error)
-     );
+    .catch(error =>
+        console.warn(error)
+    );
 
 //dolar blue
 fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/dolarblue")
-  .then(response => response.json())
-  .then(json => {
-      
-        //Creo una nueva linea en la tabla
-        let lineaTabla = document.createElement("tr");
+.then(response => response.json())
+.then(json => {
 
-        //Desestructuro el item + uso de alias
-        let {compra, fecha, venta} = json;
-        
-        //Le asigno un id para identificar al item
-        lineaTabla.id = "itemDolarBlue";
-    
-        //Convierto el monto al formato deseado
-        let compraConvertido = compra.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-        let ventaConvertido = venta.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
+    //Creo una nueva linea en la tabla
+    armarTablaDivisas(json, "itemDolarBlue", "DOLAR (USD)", "Blue");
 
-        //Definimos el innerHTML del elemento con una plantilla de texto
-        lineaTabla.innerHTML = `<td>DOLAR (USD)</td>
-                                <td>Blue</td>
-                                <td>${fecha}</td>
-                                <td>${compraConvertido}</td>
-                                <td>${ventaConvertido}</td>`;
-        
-        //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
-        let cuerpoTabla = document.querySelector(".bodyTable");
-        cuerpoTabla.appendChild(lineaTabla);
-  }
+}
     
     )
-  .catch(error =>
-    console.warn(error)
-     );
+.catch(error =>
+        console.warn(error)
+    );
 
 //dolar bolsa
 fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/dolarbolsa")
     .then(response => response.json())
     .then(json => {
-        
+
         //Creo una nueva linea en la tabla
-        let lineaTabla = document.createElement("tr");
+        armarTablaDivisas(json, "itemDolarBolsa", "DOLAR (USD)", "Bolsa");
 
-        //Desestructuro el item + uso de alias
-        let {compra, fecha, venta} = json;
-        
-        //Le asigno un id para identificar al item
-        lineaTabla.id = "itemDolarBolsa";
-    
-        //Convierto el monto al formato deseado
-        let compraConvertido = compra.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-        let ventaConvertido = venta.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-
-        //Definimos el innerHTML del elemento con una plantilla de texto
-        lineaTabla.innerHTML = `<td>DOLAR (USD)</td>
-                                <td>Bolsa</td>
-                                <td>${fecha}</td>
-                                <td>${compraConvertido}</td>
-                                <td>${ventaConvertido}</td>`;
-        
-        //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
-        let cuerpoTabla = document.querySelector(".bodyTable");
-        cuerpoTabla.appendChild(lineaTabla);
     }
     
     )
@@ -136,30 +77,10 @@ fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp
 fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/euro/nacion")
     .then(response => response.json())
     .then(json => {
-        
+
         //Creo una nueva linea en la tabla
-        let lineaTabla = document.createElement("tr");
+        armarTablaDivisas(json, "itemEuroNacion", "EURO (EUR)", "Banco Nación");
 
-        //Desestructuro el item + uso de alias
-        let {compra, fecha, venta} = json;
-        
-        //Le asigno un id para identificar al item
-        lineaTabla.id = "itemEuroNacion";
-
-        //Convierto el monto al formato deseado
-        let compraConvertido = compra.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-        let ventaConvertido = venta.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-
-        //Definimos el innerHTML del elemento con una plantilla de texto
-        lineaTabla.innerHTML = `<td>EURO (EUR)</td>
-                                <td>Banco Nación</td>
-                                <td>${fecha}</td>
-                                <td>${compraConvertido}</td>
-                                <td>${ventaConvertido}</td>`;
-        
-        //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
-        let cuerpoTabla = document.querySelector(".bodyTable");
-        cuerpoTabla.appendChild(lineaTabla);
     }
 
     )
@@ -171,30 +92,10 @@ fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp
 fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/euro/galicia")
     .then(response => response.json())
     .then(json => {
-        
+
         //Creo una nueva linea en la tabla
-        let lineaTabla = document.createElement("tr");
-
-        //Desestructuro el item + uso de alias
-        let {compra, fecha, venta} = json;
+        armarTablaDivisas(json, "itemEuroGalicia", "EURO (EUR)", "Banco Galicia");
         
-        //Le asigno un id para identificar al item
-        lineaTabla.id = "itemEurogalicia";
-
-        //Convierto el monto al formato deseado
-        let compraConvertido = compra.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-        let ventaConvertido = venta.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-
-        //Definimos el innerHTML del elemento con una plantilla de texto
-        lineaTabla.innerHTML = `<td>EURO (EUR)</td>
-                                <td>Banco Galicia</td>
-                                <td>${fecha}</td>
-                                <td>${compraConvertido}</td>
-                                <td>${ventaConvertido}</td>`;
-        
-        //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
-        let cuerpoTabla = document.querySelector(".bodyTable");
-        cuerpoTabla.appendChild(lineaTabla);
     }
 
     )
@@ -206,30 +107,10 @@ fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp
 fetch("https://cors-solucion.herokuapp.com/https://api-dolar-argentina.herokuapp.com/api/euro/bbva")
     .then(response => response.json())
     .then(json => {
-        
+                
         //Creo una nueva linea en la tabla
-        let lineaTabla = document.createElement("tr");
+        armarTablaDivisas(json, "itemEuroBBVA", "EURO (EUR)", "Banco BBVA (Francés)");
 
-        //Desestructuro el item + uso de alias
-        let {compra, fecha, venta} = json;
-        
-        //Le asigno un id para identificar al item
-        lineaTabla.id = "itemEuroBBVA";
-
-        //Convierto el monto al formato deseado
-        let compraConvertido = compra.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-        let ventaConvertido = venta.toLocaleString("es-CO", {style: "currency",currency: "COP"}).replace(/[$]/g,'');
-
-        //Definimos el innerHTML del elemento con una plantilla de texto
-        lineaTabla.innerHTML = `<td>EURO (EUR)</td>
-                                <td>Banco BBVA (Francés)</td>
-                                <td>${fecha}</td>
-                                <td>${compraConvertido}</td>
-                                <td>${ventaConvertido}</td>`;
-        
-        //Obtengo el cuerpo de la tabla y agrego la nueva linea a la misma       
-        let cuerpoTabla = document.querySelector(".bodyTable");
-        cuerpoTabla.appendChild(lineaTabla);
     }
 
     )
