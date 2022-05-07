@@ -20,6 +20,8 @@ Se agregó una sección exclusiva para los ingresos y egresos donde se ve el det
 
 Se agregaron Exports A Excel para que se pueda exportar la información a excel y guardarla o manejarla fuera de ¡Hey Wallet!
 
+Se agrego una sección de divisas para el desafio de AJAX y FETCH. Se puede ver de manera actualizada como esta la compra venta de dolares y euros.
+
 ## LIBRERIAS
 
 Se inclueron las librerias de [Sweet Alert](https://sweetalert2.github.io/) y [Luxon](https://moment.github.io/luxon/#/).
