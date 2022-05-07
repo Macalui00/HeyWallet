@@ -4,9 +4,11 @@ const libroDiarioAnual = (localStorage.getItem('libroDiarioAnual') === null ) ? 
 //Obtengo la fecha actual
 const DateTime = luxon.DateTime
 const date = DateTime.now();
-
-let mesActualNombre = date.toLocaleString({ month: "long" });
-let anioActual = date.year;
+           
+//let mesActualNombre = date.toLocaleString({ month: "long" });
+let mesActualNombre = (sessionStorage.getItem('mesActualNombre') === null ) ? date.toLocaleString({ month: "long" }) : sessionStorage.getItem('mesActualNombre');
+//let anioActual = date.year;
+let anioActual = (sessionStorage.getItem('anioActual') === null ) ? date.year : sessionStorage.getItem('anioActual');
 
 //Definimos ingresos, egresos y el balance
 let lD = obtenerLibroDiarioAct(mesActualNombre, anioActual);
@@ -111,6 +113,9 @@ btnChangeDate.onclick = () => {
             mesActualNombre = mesIngrNombre;
             anioActual = anioIngresado;
 
+            sessionStorage.setItem('mesActualNombre',mesActualNombre);
+            sessionStorage.setItem('anioActual',anioActual);
+
         } else {
 
             //Creo el libro diario
@@ -125,7 +130,9 @@ btnChangeDate.onclick = () => {
             //Actualizar mes y anio
             mesActualNombre = mesIngrNombre;
             anioActual = anioIngresado;
-
+            
+            sessionStorage.setItem('mesActualNombre',mesActualNombre);
+            sessionStorage.setItem('anioActual',anioActual);
         }
 
         //Cambio de cabecera

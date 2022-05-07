@@ -131,7 +131,7 @@ function validarFormAgrItem(){
         continuar = false;
 
     } else {
-
+        
         //Valido que el nombre no haya quedado vacío
         if (nombre.value.length === 0){
 
@@ -146,6 +146,18 @@ function validarFormAgrItem(){
             continuar = false;
 
         //Valido que no haya un item con (categoria, nombre) iguales
+        } else if(!isNaN(parseFloat(nombre.value))){
+
+            Swal.fire({
+                title: '¡Error!',
+                text: '¡El nombre no puede ser números!',
+                icon: 'error',
+                confirmButtonColor: "#198754",
+                confirmButtonText: 'OK',
+            });
+
+            continuar = false;
+
         } else if(existeItem(id,((tipoIngreso.checked) ? (catIngreso.value) : (catEgreso.value)), nombre.value)) {
 
             Swal.fire({
