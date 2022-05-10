@@ -191,8 +191,22 @@ table tr th {
       margin-left:15px;
   }
 }
+@media (max-width: 500px) {
+  .botonesBusqueda{
+    display: block !important;
+    padding-top: 10px;
+  }
+  .bus{
+    display: block !important;
+  }
+}
+@media (max-width: 607px) {
+  .botones{
+    display: block !important;
+    padding-top: 10px;
+  }
+}
 @media (max-width: 608px) {
-
   .table-responsive {
       display: block;
       width: 100%;
