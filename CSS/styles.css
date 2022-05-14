@@ -200,7 +200,7 @@ table tr th {
     display: block !important;
   }
 }
-@media (max-width: 607px) {
+@media (max-width: 504px) {
   .botones{
     display: block !important;
     padding-top: 10px;
