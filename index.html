@@ -135,10 +135,10 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="row">
-                                            <div class="col d-flex justify-content-start align-items-center">
+                                            <div class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-xs-12 d-flex justify-content-start align-items-center">
                                                 <h4 class="title-text font-text pb-0 mb-0">Detalle Ingresos - Egresos</h4>
                                             </div>
-                                            <div class="col d-flex justify-content-end">
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12 botones d-flex justify-content-end">
                                                 <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                                     data-bs-target="#agregarItem" id="btn-modalAddItem">
                                                     Agregar Item
@@ -150,10 +150,15 @@
                                         </div>
                                         <div class="row">
                                             <hr class="mt-2">
-                                            <form id="formularioBuscador" class="col d-flex justify-content-start mb-3">
-                                                <input id="buscarXNombre" class="form-control buscador me-2" type="search" placeholder="Filtrar por Nombre" aria-label="Search">
-                                                <button class="btn btn-success" id="btn-Search" type="submit">Buscar</button>
-                                                <button class="btn btn-success ms-2" id="btn-Clean" type="button">Limpiar</button>
+                                            <form id="formularioBuscador" class="col bus d-flex justify-content-start mb-3">
+                                                <div class="col-xl-3 col-lg-4 col-md-5 col-sm-5 col-xs-12 d-flex justify-content-start align-items-center">
+                                                    <input id="buscarXNombre" class="form-control buscador me-2" type="search" placeholder="Filtrar por Nombre" aria-label="Search">
+                                                </div>
+                                                <div class="col-xl-9 col-lg-8 col-md-7 col-sm-7 col-xs-12 d-flex botonesBusqueda justify-content-start">
+                                                    <button class="btn btn-success" id="btn-Search" type="submit">Buscar</button>
+                                                    <button class="btn btn-success ms-2" id="btn-Clean" type="button">Limpiar</button>
+                                                </div>                                              
+                                                
                                               </form>
                                         </div>
                                         <div class="card mt-0 shadow-sm">
